@@ -1,3 +1,4 @@
+"use strict"
 const WebSocketServer = require('ws').Server,
   express = require('express'),
   https = require('https'),
