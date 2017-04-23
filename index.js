@@ -60,7 +60,7 @@ function processMessage(message,client) {
       processSignal(message,client)
       break
       default:
-        console.log("Undefined message type: ", message
+        console.log("Undefined message type: ", message)
   }
 }
 
