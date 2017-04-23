@@ -34,6 +34,7 @@ console.log((new Date()) + " WebSocket Secure server is up and running.");
   console.log(err)
 }
 
+
 /** successful connection */
 wss.on('connection', function (client) {
   console.log((new Date()) + " A new WebSocket client was connected.");
@@ -56,14 +57,19 @@ function processMessage(message,client) {
   let m = JSON.parse(message)
   switch (m.type){
       case "login":
-      processLogin(message,client)
+      processLogin(m,client)
       break
       case "signal":
-      processSignal(message,client)
+      processSignal(m,client)
       break
       default:
         console.log("Undefined message type: ", m)
   }
+}
+
+function processLogin(message,client){
+  console.log
+
 }
 
 // broadcasting the message to all WebSocket clients.
