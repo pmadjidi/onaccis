@@ -39,7 +39,7 @@ wss.on('connection', function (client) {
   console.log((new Date()) + ' New websocket connection from %s:%d', client._socket.remoteAddress,client._socket.remotePort);
   /** incomming message */
   client.on('message', function (message) {
-  console.log("Got message: " + JSON.stringify(message,null,4))
+  console.log("Got message: " + message)
     /** broadcast message to all clients */
   //  wss.broadcast(message, client);
   processMessage(message,client)
