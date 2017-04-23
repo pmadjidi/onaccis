@@ -52,7 +52,8 @@ wss.on('connection', function (client) {
 });
 
 function processMessage(message,client) {
-  switch (message.type){
+  let m = JSON.parse(message)
+  switch (m.type){
       case "login":
       processLogin(message,client)
       break
@@ -60,7 +61,7 @@ function processMessage(message,client) {
       processSignal(message,client)
       break
       default:
-        console.log("Undefined message type: ", message)
+        console.log("Undefined message type: ", m)
   }
 }
 
