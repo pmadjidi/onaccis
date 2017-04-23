@@ -37,18 +37,20 @@ console.log((new Date()) + " WebSocket Secure server is up and running.");
 
 /** successful connection */
 wss.on('connection', function (client) {
+  let ip =  client._socket.remoteAddress
+  let port = client._socket.remotePort
   console.log((new Date()) + " A new WebSocket client was connected.");
-  console.log((new Date()) + ' New websocket connection from %s:%d', client._socket.remoteAddress,client._socket.remotePort);
+  console.log((new Date()) + ' New websocket connection from %s:%d', ip,port);
   /** incomming message */
   client.on('message', function (message) {
-  console.log("Got message: " + message)
+  console.log(new Date() + "Got message: " + ip + port + " " message)
     /** broadcast message to all clients */
   //  wss.broadcast(message, client);
   processMessage(message,client)
   });
 
   client.on('close', function(reasonCode, description) {
-        console.log((new Date()) + ' Peer ' + client + ' disconnected.');
+      console.log(new Date() + "Client disconnect " + ip + port + "reason: " + reasonCode + "description: " + description)
     });
 
 });
