@@ -52,14 +52,14 @@ wss.on('connection', function (client) {
 
 function processMessage(message,client) {
   switch (message.type){
-      case "loggin":
+      case "login":
       processLogin(message,client)
       break
       case "signal":
       processSignal(message,client)
       break
       default:
-        console.log("Undefined message type: ",message.type)
+        console.log("Undefined message type: ",JSON.stringify(message,null,4))
   }
 }
 
