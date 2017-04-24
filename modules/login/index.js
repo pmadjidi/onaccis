@@ -11,13 +11,36 @@ MongoClient.connect(dbUrl)
 function process(message,client){
   console.log("Login message recieved",message)
   DB.collection("user").findOne({username: message.username})
-  .then(user=>console.log("User = " + user))
-  .catch(err=>{console.log("No User "+err)
+  .then(user=>{
+    console.log("User = " + user)
+    if (!user)
+      throw "Not Found"
+    return user
+  })
+  .then(user=>{
+    let hash = sha512(message.password,user.salt)
+    if (hash === user.hash)
+      client.send(JSON.stringify({auth: "ok",user: message.username}))
+    else {
+        client.send(JSON.stringify({auth: "denied"}))
+    }
+  })
+  .catch(err=>{
+    console.log("No User "+err)
+  console.log("Creating user......")
 let salt = crypto.randomBytes(128).toString('hex')
 let result = sha512(message.password,salt)
-console.log("Result = " + result)})
+console.log("Result = " + result)
+DB.collection("user").insert(
+   {
+     username: message.username,
+     hash:  result.hash,
+     salt: result.salt,
+     time: new Date().getTime()
+   })
+   .then(client.send(JSON.stringify({auth: "ok", user: message.username})))
+})
 }
-
 
 let sha512 = function(password, salt){
     var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
@@ -25,7 +48,7 @@ let sha512 = function(password, salt){
     var value = hash.digest('hex');
     return {
         salt:salt,
-        passwordHash:value
+        hash:value
     };
 };
 
