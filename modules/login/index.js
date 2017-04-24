@@ -11,7 +11,7 @@ MongoClient.connect(dbUrl)
 function process(message,client){
   console.log("Login message recieved",message)
   DB.collection("user").findOne({username: message.username})
-  .then(user=>console.log(user))
+  .then(user=>console.log("User = " + user))
   .catch(err=>{console.log("No User "+err)
 let salt = crypto.randomBytes(128).toString('hex')
 let result = sha512(message.password,salt)
