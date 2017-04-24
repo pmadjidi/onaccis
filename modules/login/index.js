@@ -10,7 +10,7 @@ MongoClient.connect(dbUrl)
 
 function process(message,client){
   console.log("Login message recieved",message)
-  DB.collection.findOne({username: message.username})
+  DB.collection("user").findOne({username: message.username})
   .then(user=>console.log(user))
   .catch(err=>console.log(err))
 
