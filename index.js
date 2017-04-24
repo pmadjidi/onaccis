@@ -60,7 +60,7 @@ function processMessage(message,client) {
   let m = JSON.parse(message)
   switch (m.type){
       case "login":
-      login(m,client)
+      login.process(m,client)
       break
       case "signal":
       processSignal(m,client)

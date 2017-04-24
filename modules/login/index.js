@@ -1,7 +1,7 @@
 "use strict"
 const crypto = require('crypto')
 
-function login(message,client){
+function process(message,client){
   console.log("Login message recieved",message)
   let pass = hashPassword(message.password)
   console.log(pass)
@@ -26,5 +26,5 @@ function isPasswordCorrect(savedHash, savedSalt, savedIterations, passwordAttemp
 }
 
 module.exports = {
-  login
+  process
 }
