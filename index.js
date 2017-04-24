@@ -1,5 +1,5 @@
 "use strict"
-const login = require('./modules/login')
+const login = require('./modules/login/')
 const WebSocketServer = require('ws').Server,
   express = require('express'),
   https = require('https'),
