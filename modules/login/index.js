@@ -24,6 +24,6 @@ function isPasswordCorrect(savedHash, savedSalt, savedIterations, passwordAttemp
     return savedHash == pbkdf2(passwordAttempt, savedSalt, savedIterations);
 }
 
-modules.export = {
+module.exports = {
   login
 }
