@@ -1,15 +1,23 @@
 "use strict"
-var bcrypt = require('bcrypt');
+var crypto = require('crypto');
 
 function process(message,client){
   console.log("Login message recieved",message)
-let salt = bcrypt.randomBytes(128).toString('hex')
-console.log({salt})
-let hash = bcrypt.hashSync(message.password, salt)
-console.log({salt,hash})
+let salt = crypto.randomBytes(128).toString('hex')
+let result = sha512(message.password,salt)
+console.log(result)
 }
 
 
+let sha512 = function(password, salt){
+    var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
+    hash.update(password);
+    var value = hash.digest('hex');
+    return {
+        salt:salt,
+        passwordHash:value
+    };
+};
 
 
 module.exports = {
