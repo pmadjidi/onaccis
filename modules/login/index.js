@@ -15,7 +15,7 @@ function process(message,client){
   .catch(err=>{console.log("No User "+err)
 let salt = crypto.randomBytes(128).toString('hex')
 let result = sha512(message.password,salt)
-console.log(result)})
+console.log("Result = " + result)})
 }
 
 
