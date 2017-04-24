@@ -5,7 +5,7 @@ const MongoClient = require('mongodb').MongoClient;
 let dbUrl = "mongodb://localhost:27017/users"
 let DB = null
 MongoClient.connect(dbUrl)
-  .then(db=> DB = db)
+  .then(db=>{console.log("Connected to database users"); DB = db})
   .catch(err=>console.log("Error Connecting to database " + dbUrl + err))
 
 function process(message,client){
@@ -13,7 +13,7 @@ function process(message,client){
   DB.collection.findOne({username: message.username})
   .then(user=>console.log(user))
   .catch(err=>console.log(err))
-  
+
 let salt = crypto.randomBytes(128).toString('hex')
 let result = sha512(message.password,salt)
 console.log(result)
