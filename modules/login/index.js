@@ -1,3 +1,5 @@
+"use strict"
+
 function login(message,client){
   console.log("Login message recieved",message)
   let pass = hashPassword(message.password)
