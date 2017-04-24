@@ -1,7 +1,6 @@
 "use strict"
 var bcrypt = require('bcrypt');
 
- payload: { username: 'payam', password: 'meta1a1a', auth: '' } }
 function process(message,client){
   console.log("Login message recieved",message)
 let salt = bcrypt.genSaltSync(128);
