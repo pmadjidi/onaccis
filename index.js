@@ -60,10 +60,10 @@ function processMessage(message,client) {
   let m = JSON.parse(message)
   switch (m.type){
       case "login":
-      login.process(m,client)
+      login.process(m.payload,client)
       break
       case "signal":
-      processSignal(m,client)
+      processSignal(m.payload,client)
       break
       default:
         console.log("Undefined message type: ", m)
