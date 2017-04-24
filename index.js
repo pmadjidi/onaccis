@@ -1,4 +1,5 @@
 "use strict"
+const login = require('./moudles/login')
 const WebSocketServer = require('ws').Server,
   express = require('express'),
   https = require('https'),
@@ -50,7 +51,7 @@ wss.on('connection', function (client) {
   });
 
   client.on('close', function(reasonCode, description) {
-      console.log(new Date() + "Client disconnect " + ip + port + " reason: " + reasonCode + "description: " + description)
+      console.log(new Date() + "Client disconnect " + ip + port + " reason: " + reasonCode + " description: " + description)
     });
 
 });
@@ -59,7 +60,7 @@ function processMessage(message,client) {
   let m = JSON.parse(message)
   switch (m.type){
       case "login":
-      processLogin(m,client)
+      login(m,client)
       break
       case "signal":
       processSignal(m,client)
@@ -69,10 +70,6 @@ function processMessage(message,client) {
   }
 }
 
-function processLogin(message,client){
-  console.log
-
-}
 
 // broadcasting the message to all WebSocket clients.
 wss.broadcast = function (data, exclude) {
