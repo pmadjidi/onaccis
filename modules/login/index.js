@@ -1,4 +1,5 @@
 "use strict"
+const crypto = require('crypto')
 
 function login(message,client){
   console.log("Login message recieved",message)
