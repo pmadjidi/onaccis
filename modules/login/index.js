@@ -27,7 +27,7 @@ function setSession(username,session) {
    })
 }
 
-fucntion findUser(username){
+function findUser(username){
   return userDb.collection("user").findOne({username: username})
 }
 
