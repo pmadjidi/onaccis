@@ -3,7 +3,7 @@ const MongoClient = require('mongodb').MongoClient;
 let onlineUrl = "mongodb://localhost:27017/sessions"
 let onlineDb = null
 
-MongoClient.connect(sessionUrl)
+MongoClient.connect(onlineUrl)
     .then(db=>{console.log("Connected to database online"); onlineDb = db})
     .catch(err=>console.log("Error Connecting to session " + onlineUrl + err))
 
