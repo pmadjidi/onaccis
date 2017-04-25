@@ -82,7 +82,7 @@ function process(message,client){
     return user
   })
   .then(user=>{
-    if (veifyUser(user,message.password)) {
+    if (verifyUser(user,message.password)) {
       console.log("Auth accepted user " + user.username)
       return client.send(JSON.stringify({auth: "true",user: message.username, session: createSession(message.username)}))
     }
