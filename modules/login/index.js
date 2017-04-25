@@ -9,11 +9,12 @@ MongoClient.connect(dbUrl)
   .catch(err=>console.log("Error Connecting to database " + dbUrl + err))
 
 function setSession(username,sesssion) {
+  let timestamp =  new Date().getTime() + 24 * 60 * 60 * 1000
     return DB.collection("sesssion").insert(
    {
      username: username,
      session: session
-     time: new Date().getTime()
+     valid: timestamp
    })
 }
 
