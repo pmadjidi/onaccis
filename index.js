@@ -1,5 +1,6 @@
 "use strict"
 const login = require('./modules/login/')
+const onine = require('./modules/online/')
 const WebSocketServer = require('ws').Server,
   express = require('express'),
   https = require('https'),
@@ -66,7 +67,7 @@ function processMessage(message,client) {
       processSignal(m.payload,client)
       break
       case "online":
-      processOnline(m.payload,client)
+      online.process(m.payload,client)
       default:
         console.log("Undefined message type: ", m)
   }
