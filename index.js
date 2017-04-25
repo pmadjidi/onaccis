@@ -10,7 +10,7 @@ const WebSocketServer = require('ws').Server,
 const pkey = fs.readFileSync('./ssl/key.pem'),
   pcert = fs.readFileSync('./ssl/cert.pem'),
   options = {key: pkey, cert: pcert, passphrase: '123456789'};
-var wss = null, sslSrv = null;
+let wss = null, sslSrv = null
 
 // use express static to deliver resources HTML, CSS, JS, etc)
 // from the public folder
@@ -54,6 +54,7 @@ wss.on('connection', function (client) {
   client.on('close', function(reasonCode, description) {
       console.log(new Date() + "Client disconnect " + ip + port + " reason: " + reasonCode + " description: " + description)
       console.log("Removing session")
+      console.log(client.onacciSession)
     });
 
 });

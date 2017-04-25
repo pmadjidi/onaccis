@@ -35,13 +35,14 @@ MongoClient.connect(sessionUrl)
 
 
 
-function setSession(username,session) {
+function setSession(username,session,client) {
   let sesObj = {
     username: username,
     session: session,
     valid:  new Date().getTime() + 24 * 60 * 60 * 1000
   }
   AUTH.session = sesObj
+  client.onacciSession = sesObj
 }
 
 
@@ -63,9 +64,9 @@ function createUser(username,password){
   return userDb.collection("users").insert(arg)
 }
 
-function createSession(username) {
+function createSession(username,client) {
   let session = crypto.randomBytes(64).toString('hex')
-  setSession(username,session)
+  setSession(username,session,client)
   console.log("SES ",session);
   return session
 }
@@ -99,7 +100,7 @@ function process(message,client){
   .then(user=>{
     if (verifyUser(user,message.password)) {
       console.log("Auth accepted user " + user.username)
-      return client.send(JSON.stringify({auth: "true",user: message.username, session: createSession(message.username)}))
+      return client.send(JSON.stringify({auth: "true",user: message.username, session: createSession(message.username,client)}))
     }
       console.log("Auth denied user " + user.username)
     return client.send(JSON.stringify({auth: "false", user: message.username}))
@@ -108,7 +109,7 @@ function process(message,client){
 
   if (err === "NotFound") {
   createUser(message.username,message.password)
-   .then(client.send(JSON.stringify({auth: "true", user: message.username, session: createSession(message.username)})))
+   .then(client.send(JSON.stringify({auth: "true", user: message.username, session: createSession(message.username,client)})))
  }
  else {
      console.log(err)
