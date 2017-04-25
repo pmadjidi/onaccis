@@ -74,7 +74,7 @@ function sha512(password, salt){
 
 function process(message,client){
   console.log(new Date() + "Processing login....",JSON.stringify(message,null,4))
-  findUser(message.username)
+  return findUser(message.username)
   .then(user=>{
     if (!user)
       throw "NotFound"
