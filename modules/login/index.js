@@ -89,7 +89,7 @@ function process(message,client){
     return client.send(JSON.stringify({auth: "false", user: message.username}))
   })
   .catch(err=>{
-    console.log("2")
+    console.log(err)
   if (err === "NotFound") {
   createUser(message.username,message.password)
    .then(client.send(JSON.stringify({auth: "true", user: message.username, session: createSession(message.username)})))
