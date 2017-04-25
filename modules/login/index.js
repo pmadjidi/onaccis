@@ -2,15 +2,24 @@
 
 const crypto = require('crypto');
 const MongoClient = require('mongodb').MongoClient;
-let dbUrl = "mongodb://localhost:27017/users"
-let DB = null
-MongoClient.connect(dbUrl)
-  .then(db=>{console.log("Connected to database users"); DB = db})
-  .catch(err=>console.log("Error Connecting to database " + dbUrl + err))
+let userUrl = "mongodb://localhost:27017/users"
+let sessionUrl = "mongodb://localhost:27017/sessions"
+
+let userDb = null
+let sessionDb = null
+MongoClient.connect(userUrl)
+  .then(db=>{console.log("Connected to database users"); userDb = db})
+  .catch(err=>console.log("Error Connecting to database " + userUrl + err))
+
+MongoClient.connect(sessionUrl)
+    .then(db=>{console.log("Connected to database sessions"); sessionDb = db})
+    .catch(err=>console.log("Error Connecting to database " + sessionUrl + err))
+
+
 
 function setSession(username,sesssion) {
   let timestamp =  new Date().getTime() + 24 * 60 * 60 * 1000
-    return DB.collection("sesssion").insert(
+    return sessionDb.collection("session").insert(
    {
      username: username,
      session: session,
@@ -21,7 +30,7 @@ function setSession(username,sesssion) {
 
 function process(message,client){
   console.log("Login message recieved",message)
-  DB.collection("user").findOne({username: message.username})
+  userDb.collection("user").findOne({username: message.username})
   .then(user=>{
     console.log("User = " + user)
     if (!user)
@@ -48,7 +57,7 @@ let salt = crypto.randomBytes(128).toString('hex')
 let result = sha512(message.password,salt)
 console.log("Result = " + result)
 setSession(message.username,session)
-return DB.collection("user").insert(
+return userDb.collection("user").insert(
    {
      username: message.username,
      hash:  result.hash,
