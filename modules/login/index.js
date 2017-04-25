@@ -57,7 +57,7 @@ function createSession(username) {
 
 function verifyUser(user,suggestedPassword){
   let hash = sha512(suggestedPassword,user.salt)
-  if (hash === user.hash)
+  if (hash.hash === user.hash)
     return true
   return false
 }

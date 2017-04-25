@@ -8,13 +8,13 @@ MongoClient.connect(onlineUrl)
     .catch(err=>console.log("Error Connecting to session " + onlineUrl + err))
 
     function findSessions() {
-      return onlineDb.collection("sessions").find()
+      return Promise.resolve(onlineDb.collection("sessions").find())
     }
 
 
 
     function process(message,client){
-      console.log(new Date() + "Processing login....",JSON.stringify(message,null,4))
+      console.log(new Date() + "Processing Online user Lists....",JSON.stringify(message,null,4))
       findSessions()
       .then(userList=>{
       client.send(JSON.stringify({online: userList}))
