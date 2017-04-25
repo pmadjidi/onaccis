@@ -50,7 +50,7 @@ function createUser(username,password){
 
 function createSession(username) {
   let session = crypto.randomBytes(64).toString('hex')
-  setSession(message.username,session)
+  setSession(username,session)
   console.log("SES ",session);
   return session
 }
