@@ -36,9 +36,7 @@ function findUser(username){
 }
 
 function createUser(username,password){
-  console.log(3);
   let salt = crypto.randomBytes(128).toString('hex')
-  console.log(4);
   let result = sha512(password,salt)
   console.log("Creating user......",username)
   let arg = {
@@ -47,13 +45,13 @@ function createUser(username,password){
     salt: result.salt,
     time: new Date().getTime()
   }
-  console.log(arg);
   return userDb.collection("users").insert(arg)
 }
 
 function createSession(username) {
   let session = crypto.randomBytes(64).toString('hex')
   setSession(message.username,session)
+  console.log("SES ",session);
   return session
 }
 
@@ -94,7 +92,6 @@ function process(message,client){
   .catch(err=>{
 
   if (err === "NotFound") {
-    console.log("2");
   createUser(message.username,message.password)
    .then(client.send(JSON.stringify({auth: "true", user: message.username, session: createSession(message.username)})))
  }
