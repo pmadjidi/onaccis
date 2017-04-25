@@ -18,12 +18,11 @@ MongoClient.connect(sessionUrl)
 
 
 function setSession(username,session) {
-  let timestamp =  new Date().getTime() + 24 * 60 * 60 * 1000
     return sessionDb.collection("sessions").insert(
    {
      username: username,
      session: session,
-     valid: timestamp
+     valid:  new Date().getTime() + 24 * 60 * 60 * 1000
    })
 }
 
@@ -50,7 +49,7 @@ function createUser(username,password){
 }
 
 function createSession(username) {
-  let session = crypto.randomBytes(128).toString('hex')
+  let session = crypto.randomBytes(64).toString('hex')
   setSession(message.username,session)
   return session
 }
@@ -62,9 +61,18 @@ function verifyUser(user,suggestedPassword){
   return false
 }
 
+function dhs512(password, salt){
+    var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
+    hash.update(password);
+    var value = hash.digest('hex');
+    return {
+        salt:salt,
+        hash:value
+    };
+};
 
 function process(message,client){
-  console.log("Login message recieved",message)
+  console.log("Login message recieved",JSON.strigify(message,null,4))
   findUser(message.username)
   .then(user=>{
     if (!user)
@@ -88,16 +96,6 @@ function process(message,client){
  }
 })
 }
-
-let sha512 = function(password, salt){
-    var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
-    hash.update(password);
-    var value = hash.digest('hex');
-    return {
-        salt:salt,
-        hash:value
-    };
-};
 
 
 module.exports = {
