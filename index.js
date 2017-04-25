@@ -78,7 +78,7 @@ function processMessage(message,client) {
   }
 }
 else {
-  console.log("Sending auth: false message to: " message.username);
+  console.log("Sending auth: false message to: ", message.username);
   client.send(JSON.stringify({auth: "false", user: message.username}))
 }
 }
