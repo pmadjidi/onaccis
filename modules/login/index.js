@@ -39,13 +39,14 @@ function createUser(username,password){
   let salt = crypto.randomBytes(128).toString('hex')
   let result = sha512(password,salt)
   console.log("Creating user......",username)
-  return userDb.collection("users").insert(
-     {
-       username: username,
-       hash:  result.hash,
-       salt: result.salt,
-       time: new Date().getTime()
-     })
+  let arg = {
+    username: username,
+    hash:  result.hash,
+    salt: result.salt,
+    time: new Date().getTime()
+  }
+  console.log(arg);
+  return userDb.collection("users").insert(arg)
 }
 
 function createSession(username) {
@@ -89,8 +90,9 @@ function process(message,client){
     return client.send(JSON.stringify({auth: "false", user: message.username}))
   })
   .catch(err=>{
-    console.log(err)
+
   if (err === "NotFound") {
+    console.log("2");
   createUser(message.username,message.password)
    .then(client.send(JSON.stringify({auth: "true", user: message.username, session: createSession(message.username)})))
  }
