@@ -8,9 +8,8 @@ MongoClient.connect(onlineUrl)
     .catch(err=>console.log("Error Connecting to session " + onlineUrl + err))
 
     function findSessions() {
-      let sessionarray =  onlineDb.collection("sessions").find().toArray()
-      sessionarray.then(a=>a.map(item=>console.log(item)))
-      //.then(sessionList=>sessionList.map(session=>session.user))
+      return sessionarray =  onlineDb.collection("sessions").find().toArray()
+      .then(a=>a.map(item=>item.username)
     }
 
 
@@ -18,16 +17,14 @@ MongoClient.connect(onlineUrl)
     function process(message,client){
       console.log(new Date() + "Processing Online user Lists....",JSON.stringify(message,null,4))
       findSessions()
-      /*
       .then(userList=>{
         console.log(userList)
-      //client.send(JSON.stringify({online: userList}))
+        client.send(JSON.stringify({online: userList}))
       })
       .catch(err=>{
         console.log(err)
         client.send(JSON.stringify({online: "error"}))})
      }
-     */
    }
 
     module.exports = {
