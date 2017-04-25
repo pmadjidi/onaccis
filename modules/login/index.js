@@ -36,6 +36,7 @@ function findUser(username){
 }
 
 function createUser(username,password){
+  console.log(3);
   let salt = crypto.randomBytes(128).toString('hex')
   let result = sha512(password,salt)
   console.log("Creating user......",username)
