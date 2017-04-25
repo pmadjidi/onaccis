@@ -75,9 +75,10 @@ function processMessage(message,client) {
       processOnline(m.payload,client)
       default:
         console.log("Undefined message type: ", m)
-  }''
+  }
 }
 else {
+  console.log("Sending auth: false message to: " message.username);
   client.send(JSON.stringify({auth: "false", user: message.username}))
 }
 }
