@@ -13,7 +13,7 @@ function setSession(username,sesssion) {
     return DB.collection("sesssion").insert(
    {
      username: username,
-     session: session
+     session: session,
      valid: timestamp
    })
 }
