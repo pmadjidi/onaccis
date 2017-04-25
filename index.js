@@ -1,6 +1,6 @@
 "use strict"
 const login = require('./modules/login/')
-const onine = require('./modules/online/')
+const online = require('./modules/online/')
 const WebSocketServer = require('ws').Server,
   express = require('express'),
   https = require('https'),
