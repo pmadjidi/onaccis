@@ -72,7 +72,7 @@ function dhs512(password, salt){
 };
 
 function process(message,client){
-  console.log(new Date() + "Processing login message recieved",JSON.stringify(message,null,4))
+  console.log(new Date() + "Processing login....",JSON.stringify(message,null,4))
   findUser(message.username)
   .then(user=>{
     if (!user)
@@ -89,6 +89,7 @@ function process(message,client){
     return client.send(JSON.stringify({auth: "false", user: message.username}))
   })
   .catch(err=>{
+    console.log("2")
   if (err === "NotFound") {
   createUser(message.username,message.password)
    .then(client.send(JSON.stringify({auth: "true", user: message.username, session: createSession(message.username)})))
