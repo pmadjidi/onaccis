@@ -72,7 +72,7 @@ function dhs512(password, salt){
 };
 
 function process(message,client){
-  console.log("Login message recieved",JSON.strigify(message,null,4))
+  console.log("Login message recieved",JSON.stringify(message,null,4))
   findUser(message.username)
   .then(user=>{
     if (!user)
