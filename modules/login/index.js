@@ -43,7 +43,7 @@ function process(message,client){
     console.log("No User "+err)
   console.log("Creating user......")
 let session = crypto.randomBytes(128).toString('hex')
-console.log(sessoin)
+console.log(session)
 let salt = crypto.randomBytes(128).toString('hex')
 let result = sha512(message.password,salt)
 console.log("Result = " + result)
