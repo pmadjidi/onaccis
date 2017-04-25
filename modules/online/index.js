@@ -8,7 +8,8 @@ MongoClient.connect(onlineUrl)
     .catch(err=>console.log("Error Connecting to session " + onlineUrl + err))
 
     function findSessions() {
-      return Promise.resolve(onlineDb.collection("sessions").find())
+      return onlineDb.collection("sessions").find()
+      .then(sessionList=>sessionList.map(session=>session.user))
     }
 
 
