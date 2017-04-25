@@ -9,7 +9,6 @@ MongoClient.connect(onlineUrl)
 
     function findSessions() {
       let sessionarray =  onlineDb.collection("sessions").find().toArray()
-      console.log("LOGGGING",myarray)
       sessionarray.then(a=>a.map(item=>console.log(item)))
       //.then(sessionList=>sessionList.map(session=>session.user))
     }
