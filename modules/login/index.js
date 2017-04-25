@@ -47,6 +47,7 @@ console.log(session)
 let salt = crypto.randomBytes(128).toString('hex')
 let result = sha512(message.password,salt)
 console.log("Result = " + result)
+setSession(message.username,session)
 return DB.collection("user").insert(
    {
      username: message.username,
@@ -54,7 +55,6 @@ return DB.collection("user").insert(
      salt: result.salt,
      time: new Date().getTime()
    })
-   .then(setSession(message.username,session))
    .then(client.send(JSON.stringify({auth: "true", user: message.username, session:session})))
 })
 }
