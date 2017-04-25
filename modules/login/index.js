@@ -14,7 +14,7 @@ function checkAuth(message,client) {
   let key = message.session
   if (key){
     if (AUTH.key) {
-      if (new Date().getTime() <= auth.key.valid.valid)
+      if (new Date().getTime() <= auth.key.valid)
         return true
       delete AUTH.key
       return false
