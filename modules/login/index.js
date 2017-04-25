@@ -72,18 +72,20 @@ function dhs512(password, salt){
 };
 
 function process(message,client){
-  console.log(new Date() + "Login message recieved",JSON.stringify(message,null,4))
+  console.log(new Date() + "Processing login message recieved",JSON.stringify(message,null,4))
   findUser(message.username)
   .then(user=>{
     if (!user)
       throw "NotFound"
-    console.log("User = " + user.username)
+    console.log("Found user " + user.username)
     return user
   })
   .then(user=>{
     if (veifyUser(user,message.password)) {
+      console.log("Auth accepted user " + user.username)
       return client.send(JSON.stringify({auth: "true",user: message.username, session: createSession(message.username)}))
     }
+      console.log("Auth denied user " + user.username)
     return client.send(JSON.stringify({auth: "false", user: message.username}))
   })
   .catch(err=>{
