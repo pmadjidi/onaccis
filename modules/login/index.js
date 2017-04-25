@@ -39,6 +39,7 @@ function findUser(username){
 function createUser(username,password){
   let salt = crypto.randomBytes(128).toString('hex')
   let result = sha512(password,salt)
+  console.log("Creating user......",username)
   return userDb.collection("users").insert(
      {
        username: username,
@@ -54,6 +55,13 @@ function createSession(username) {
   return session
 }
 
+function verifyUser(user,suggestedPassword){
+  let hash = sha512(suggestedPassword,user.salt)
+  if (hash === user.hash)
+    return true
+  return false
+}
+
 
 function process(message,client){
   console.log("Login message recieved",message)
@@ -61,25 +69,19 @@ function process(message,client){
   .then(user=>{
     if (!user)
       throw "Not Found"
-    console.log("User = " + JSON.stringify(user))
+    console.log("User = " + user.usernmae)
     return user
   })
   .then(user=>{
-    let hash = sha512(message.password,user.salt)
-    if (hash === user.hash) {
-      let session = createSession(message.username)
-      return client.send(JSON.stringify({auth: "true",user: message.username, session: session}))
+    if (veifyUser(user,message.password)) {
+      return client.send(JSON.stringify({auth: "true",user: message.username, session: createSession(message.username)}))
     }
-    else {
-        return client.send(JSON.stringify({auth: "false", user: message.username}))
-    }
+    return client.send(JSON.stringify({auth: "false", user: message.username}))
   })
   .catch(err=>{
-  console.log("No User "+ err)
-  console.log("Creating user......")
-  let session = createSession(message.username)
+  console.log("No User found..."+ err)
   createUser(message.username,message.password)
-   .then(client.send(JSON.stringify({auth: "true", user: message.username, session:session})))
+   .then(client.send(JSON.stringify({auth: "true", user: message.username, session: createSession(message.username)})))
 })
 }
 
