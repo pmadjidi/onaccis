@@ -72,7 +72,7 @@ function processMessage(message,client) {
       processSignal(m.payload,client)
       break
       case "online":
-      online.process(m.payload,client)
+      processOnline(m.payload,client)
       default:
         console.log("Undefined message type: ", m)
   }''
@@ -80,6 +80,17 @@ function processMessage(message,client) {
 else {
   client.send(JSON.stringify({auth: "false", user: message.username}))
 }
+}
+
+function processOnline() {
+  let userList = []
+  var i = 0, n = wss.clients ? wss.clients.length : 0, client = null;
+  if (n < 1)
+    client.send(JSON.stringify({online: userList}))
+
+  userList = wss.clients.map(conn => conn.onacciSession.username)
+  client.send(JSON.stringify({online: userList}))
+
 }
 
 
