@@ -65,6 +65,8 @@ function processMessage(message,client) {
       case "signal":
       processSignal(m.payload,client)
       break
+      case "online":
+      processOnline(m.payload,client)
       default:
         console.log("Undefined message type: ", m)
   }
