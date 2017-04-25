@@ -9,7 +9,7 @@ MongoClient.connect(onlineUrl)
 
     function findSessions() {
       return sessionarray =  onlineDb.collection("sessions").find().toArray()
-      .then(a=>a.map(item=>item.username)
+      .then(a=>a.map(item=>item.username))
     }
 
 
