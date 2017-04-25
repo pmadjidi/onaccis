@@ -5,6 +5,25 @@ const MongoClient = require('mongodb').MongoClient;
 let userUrl = "mongodb://localhost:27017/users"
 let sessionUrl = "mongodb://localhost:27017/sessions"
 
+let AUTH = {}
+
+function checkAuth(message,client) {
+  if (message.type === "login")
+    return true
+  let key = message.session
+  if (key){
+    if (AUTH.key) {
+      if (new Date().getTime() <= auth.key.valid.valid)
+        return true
+      delete AUTH.key
+      sessionDb.collection("sessions").remove({session: key})
+      return false
+    }
+    return false
+  }
+  return false
+}
+
 let userDb = null
 let sessionDb = null
 MongoClient.connect(userUrl)
@@ -18,12 +37,13 @@ MongoClient.connect(sessionUrl)
 
 
 function setSession(username,session) {
-    return sessionDb.collection("sessions").insert(
-   {
-     username: username,
-     session: session,
-     valid:  new Date().getTime() + 24 * 60 * 60 * 1000
-   })
+  let sesObj = {
+    username: username,
+    session: session,
+    valid:  new Date().getTime() + 24 * 60 * 60 * 1000
+  }
+  AUTH.session = sesObj
+    return sessionDb.collection("sessions").insert(sesObj)
 }
 
 function findSession(username) {
@@ -103,5 +123,6 @@ function process(message,client){
 
 
 module.exports = {
-  process
+  process,
+  checkAuth
 }

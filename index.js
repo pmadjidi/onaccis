@@ -53,12 +53,16 @@ wss.on('connection', function (client) {
 
   client.on('close', function(reasonCode, description) {
       console.log(new Date() + "Client disconnect " + ip + port + " reason: " + reasonCode + " description: " + description)
+      console.log("Removing session")
     });
 
 });
 
+
+
 function processMessage(message,client) {
   let m = JSON.parse(message)
+  if (login.checkAuth(m,client)) {
   switch (m.type){
       case "login":
       login.process(m.payload,client)
@@ -70,7 +74,11 @@ function processMessage(message,client) {
       online.process(m.payload,client)
       default:
         console.log("Undefined message type: ", m)
-  }
+  }''
+}
+else {
+  client.send(JSON.stringify({auth: "false", user: message.username}))
+}
 }
 
 
