@@ -55,7 +55,7 @@ return DB.collection("user").insert(
      time: new Date().getTime()
    })
    .then(setSession(message.username,session))
-   .then(client.send(JSON.stringify({auth: "true", user: message.username})))
+   .then(client.send(JSON.stringify({auth: "true", user: message.username, session:session})))
 })
 }
 
