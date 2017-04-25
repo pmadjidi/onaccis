@@ -27,21 +27,42 @@ function setSession(username,session) {
    })
 }
 
+fucntion findUser(username){
+  return userDb.collection("user").findOne({username: username})
+}
+
+function createUser(username,password){
+  let salt = crypto.randomBytes(128).toString('hex')
+  let result = sha512(password,salt)
+  return userDb.collection("user").insert(
+     {
+       username: username,
+       hash:  result.hash,
+       salt: result.salt,
+       time: new Date().getTime()
+     })
+}
+
+function createSession(username) {
+  let session = crypto.randomBytes(128).toString('hex')
+  setSession(message.username,session)
+  return session
+}
+
 
 function process(message,client){
   console.log("Login message recieved",message)
-  userDb.collection("user").findOne({username: message.username})
+  findUser(message.username)
   .then(user=>{
-    console.log("User = " + user)
     if (!user)
       throw "Not Found"
+    console.log("User = " + JSON.stringify(user))
     return user
   })
   .then(user=>{
     let hash = sha512(message.password,user.salt)
     if (hash === user.hash) {
-      let session = crypto.randomBytes(128).toString('hex')
-      setSession(message.username,session)
+      let session = createSession(message.username)
       return client.send(JSON.stringify({auth: "true",user: message.username, session: session}))
     }
     else {
@@ -49,21 +70,10 @@ function process(message,client){
     }
   })
   .catch(err=>{
-    console.log("No User "+err)
+  console.log("No User "+ err)
   console.log("Creating user......")
-let session = crypto.randomBytes(128).toString('hex')
-console.log(session)
-let salt = crypto.randomBytes(128).toString('hex')
-let result = sha512(message.password,salt)
-console.log("Result = " + result)
-setSession(message.username,session)
-return userDb.collection("user").insert(
-   {
-     username: message.username,
-     hash:  result.hash,
-     salt: result.salt,
-     time: new Date().getTime()
-   })
+  let session = createSession(message.username)
+  createUser(message.username,message.password)
    .then(client.send(JSON.stringify({auth: "true", user: message.username, session:session})))
 })
 }
