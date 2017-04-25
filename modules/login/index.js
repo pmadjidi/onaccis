@@ -68,7 +68,7 @@ function process(message,client){
   findUser(message.username)
   .then(user=>{
     if (!user)
-      throw "Not Found"
+      throw "NotFound"
     console.log("User = " + user.usernmae)
     return user
   })
@@ -79,9 +79,13 @@ function process(message,client){
     return client.send(JSON.stringify({auth: "false", user: message.username}))
   })
   .catch(err=>{
-  console.log("No User found..."+ err)
+  if (err === "NotFound") {
   createUser(message.username,message.password)
    .then(client.send(JSON.stringify({auth: "true", user: message.username, session: createSession(message.username)})))
+ }
+ else {
+     console.log(err)
+ }
 })
 }
 
