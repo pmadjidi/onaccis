@@ -10,7 +10,7 @@ let AUTH = {}
 function checkAuth(message,client) {
   if (message.type === "login")
     return true
-  console.log(message)
+  console.log("CheckAuth: ", message)
   let key = message.session
   if (key){
     if (AUTH.key) {
