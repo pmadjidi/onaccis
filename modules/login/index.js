@@ -38,6 +38,7 @@ function findUser(username){
 function createUser(username,password){
   console.log(3);
   let salt = crypto.randomBytes(128).toString('hex')
+  console.log(4);
   let result = sha512(password,salt)
   console.log("Creating user......",username)
   let arg = {
@@ -63,7 +64,7 @@ function verifyUser(user,suggestedPassword){
   return false
 }
 
-function dhs512(password, salt){
+function sha512(password, salt){
     var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
     hash.update(password);
     var value = hash.digest('hex');
