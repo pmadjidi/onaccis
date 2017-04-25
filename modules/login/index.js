@@ -27,14 +27,19 @@ function setSession(username,session) {
    })
 }
 
+function findSession(username) {
+  return sessionDb.collection("sessions").findOne({username: username})
+}
+
+
 function findUser(username){
-  return userDb.collection("user").findOne({username: username})
+  return userDb.collection("users").findOne({username: username})
 }
 
 function createUser(username,password){
   let salt = crypto.randomBytes(128).toString('hex')
   let result = sha512(password,salt)
-  return userDb.collection("user").insert(
+  return userDb.collection("users").insert(
      {
        username: username,
        hash:  result.hash,
