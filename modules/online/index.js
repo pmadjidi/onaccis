@@ -1,3 +1,4 @@
+"use strict"
 const MongoClient = require('mongodb').MongoClient;
 let sessionUrl = "mongodb://localhost:27017/sessions"
 let sessionDb = null
