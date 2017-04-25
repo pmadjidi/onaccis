@@ -1,14 +1,14 @@
 "use strict"
 const MongoClient = require('mongodb').MongoClient;
-let sessionUrl = "mongodb://localhost:27017/sessions"
-let sessionDb = null
+let onlineUrl = "mongodb://localhost:27017/sessions"
+let onlineDb = null
 
 MongoClient.connect(sessionUrl)
-    .then(db=>{console.log("Connected to database sessions"); sessionDb = db})
-    .catch(err=>console.log("Error Connecting to database " + sessionUrl + err))
+    .then(db=>{console.log("Connected to database online"); onlineDb = db})
+    .catch(err=>console.log("Error Connecting to session " + onlineUrl + err))
 
     function findSessions() {
-      return sessionDb.collection("sessions").find()
+      return onlineDb.collection("sessions").find()
     }
 
 
