@@ -17,7 +17,7 @@ MongoClient.connect(sessionUrl)
 
 
 
-function setSession(username,sesssion) {
+function setSession(username,session) {
   let timestamp =  new Date().getTime() + 24 * 60 * 60 * 1000
     return sessionDb.collection("sessions").insert(
    {
