@@ -25,7 +25,7 @@ MongoClient.connect(onlineUrl)
         console.log(err)
         client.send(JSON.stringify({online: "error"}))})
      }
-   }
+
 
     module.exports = {
       process
