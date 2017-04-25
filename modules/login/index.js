@@ -16,7 +16,6 @@ function checkAuth(message,client) {
       if (new Date().getTime() <= auth.key.valid.valid)
         return true
       delete AUTH.key
-      sessionDb.collection("sessions").remove({session: key})
       return false
     }
     return false
@@ -43,12 +42,8 @@ function setSession(username,session) {
     valid:  new Date().getTime() + 24 * 60 * 60 * 1000
   }
   AUTH.session = sesObj
-    return sessionDb.collection("sessions").insert(sesObj)
 }
 
-function findSession(username) {
-  return sessionDb.collection("sessions").findOne({username: username})
-}
 
 
 function findUser(username){
