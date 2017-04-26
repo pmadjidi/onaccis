@@ -44,12 +44,12 @@ wss.on('connection', function (client) {
   let port = client._socket.remotePort
   console.log((new Date()) + " A new WebSocket client was connected.");
   console.log((new Date()) + ' New websocket connection from %s:%d', ip,port);
+  notifyClientsOnline(client)
   /** incomming message */
   client.on('message', function (message) {
   console.log(new Date() + "Got message: " + ip + port + " " + message)
     /** broadcast message to all clients */
   //  wss.broadcast(message, client);
-  notifyClientsOnline(client)
   processMessage(message,client)
   });
 
