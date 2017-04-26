@@ -61,7 +61,7 @@ wss.on('connection', function (client) {
 
 function notifyClientsOnline(client){
   CLIENTS.push(client)
-  CLIENTS.map(cl=>processOnline({},cl))
+//  CLIENTS.map(cl=>processOnline({},cl))
 }
 
 function notifyClientsOffline(client) {
@@ -70,7 +70,7 @@ function notifyClientsOffline(client) {
   console.log(CLIENTS.length)
   CLIENTS = CLIENTS.filter(cl=>cl==client)
   console.log(CLIENTS.length)
-  CLIENTS.map(cl=>processOnline({},cl))
+//  CLIENTS.map(cl=>processOnline({},cl))
 }
 
 
@@ -85,6 +85,9 @@ function processMessage(message,client) {
       break
       case "signal":
       processSignal(m.payload,client)
+      break
+      case "online":
+      processOnline(m.payload,client)
       break
       default:
         console.log("Undefined message type: ", m)
