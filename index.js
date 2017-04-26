@@ -85,7 +85,7 @@ else {
 }
 }
 
-function processOnline() {
+function processOnline(message,client) {
   let userList = []
   console.log(wss.clients)
   console.log(wss.clients.length)
