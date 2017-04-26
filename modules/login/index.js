@@ -11,13 +11,14 @@ function checkAuth(message,client) {
   if (message.type === "login")
     return true
   console.log("CheckAuth: ", message)
-  let key = message.session
+  let key = message.payload.session
   let now = new Date().getTime()
   console.log("KEY",key)
   console.log("AUTH.key",AUTH.key)
+  console.log("AUTH.key.valid", AUTH.key.valid)
 
   if (key && AUTH.key) {
-    return now <= auth.key.valid
+    return now <= AUTH.key.valid
   }
   else
     return false
