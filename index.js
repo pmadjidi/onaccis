@@ -75,6 +75,7 @@ function processMessage(message,client) {
       break
       case "online":
       processOnline(m.payload,client)
+      break
       default:
         console.log("Undefined message type: ", m)
   }
@@ -92,6 +93,11 @@ function processOnline(message,client) {
   return client.send(JSON.stringify({online: []}))
 
   var i = 0, n = wss.clients ? wss.clients.length : 0, client = null;
+  for (; i < n; i++) {
+    client = wss.clients[i];
+    // don't send the message to the sender...
+    if (client === exclude) continue;
+    if (client.readyState === client.OPEN) client.send(data);
   if (n < 1)
     client.send(JSON.stringify({online: false}))
 
