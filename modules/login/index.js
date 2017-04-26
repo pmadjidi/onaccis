@@ -99,13 +99,16 @@ function process(message,client){
     console.log("Found user " + user.username)
     return user
   })
-  .then(user=>{
-    if (verifyUser(user,message.password)) {
+  .then(user=>verifyUser(user,message.password))
+  .then(status=>{
+    if (status) {
       console.log("Auth accepted user " + user.username)
       return client.send(JSON.stringify({auth: "true",user: message.username, session: createSession(message.username,client)}))
     }
+    else {
       console.log("Auth denied user " + user.username)
     return client.send(JSON.stringify({auth: "false", user: message.username}))
+  }
   })
   .catch(err=>{
 
