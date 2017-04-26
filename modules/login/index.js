@@ -102,11 +102,11 @@ function process(message,client){
   .then(user=>verifyUser(user,message.password))
   .then(status=>{
     if (status) {
-      console.log("Auth accepted user " + user.username)
+      console.log("Auth accepted user " + message.username)
       return client.send(JSON.stringify({auth: "true",user: message.username, session: createSession(message.username,client)}))
     }
     else {
-      console.log("Auth denied user " + user.username)
+      console.log("Auth denied user " + message.username)
     return client.send(JSON.stringify({auth: "false", user: message.username}))
   }
   })
