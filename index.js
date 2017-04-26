@@ -60,9 +60,11 @@ wss.on('connection', function (client) {
       console.log(CLIENTS.length)
       CLIENTS = CLIENTS.filter(cl=>cl==client)
       console.log(CLIENTS.length)
+      notifyClientsOnline()
     });
-
 });
+
+
 
 
 
@@ -92,8 +94,11 @@ else {
 }
 
 function processOnline(message,client) {
-  let userList = CLIENTS.map(cl=>cl.onacciSession.username)
-  client.send(JSON.stringify({online: userList}))
+  let userList = CLIENTS.map(cl=>{
+    if (cl.onacciSession)
+      return cl.onacciSession.username
+  })
+  client.send(JSON.stringify(type: "online",data: userList))
 
 }
 
