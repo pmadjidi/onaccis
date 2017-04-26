@@ -11,6 +11,7 @@ const pkey = fs.readFileSync('./ssl/key.pem'),
   pcert = fs.readFileSync('./ssl/cert.pem'),
   options = {key: pkey, cert: pcert, passphrase: '123456789'};
 let wss = null, sslSrv = null
+let CLIENTS = []
 
 // use express static to deliver resources HTML, CSS, JS, etc)
 // from the public folder
@@ -39,6 +40,7 @@ console.log((new Date()) + " WebSocket Secure server is up and running.");
 
 /** successful connection */
 wss.on('connection', function (client) {
+  CLIENTS.push(client)
   let ip =  client._socket.remoteAddress
   let port = client._socket.remotePort
   console.log((new Date()) + " A new WebSocket client was connected.");
@@ -87,21 +89,7 @@ else {
 }
 
 function processOnline(message,client) {
-  let userList = []
-  //console.log("clients",wss.client)
-  console.log("number of clients",wss.client.length)
-  return client.send(JSON.stringify({online: []}))
-
-  var i = 0, n = wss.clients ? wss.clients.length : 0, client = null;
-  for (; i < n; i++) {
-    client = wss.clients[i];
-    // don't send the message to the sender...
-    if (client === exclude) continue;
-    if (client.readyState === client.OPEN) client.send(data);
-  if (n < 1)
-    client.send(JSON.stringify({online: false}))
-
-  userList = wss.clients.map(conn => conn.onacciSession.username)
+  let userList = CLIENTS.map(cl=>cl.onacciSession.user)
   client.send(JSON.stringify({online: userList}))
 
 }
