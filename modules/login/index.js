@@ -5,19 +5,17 @@ const MongoClient = require('mongodb').MongoClient;
 let userUrl = "mongodb://localhost:27017/users"
 let sessionUrl = "mongodb://localhost:27017/sessions"
 
-let AUTH = {}
 
 function checkAuth(message,client) {
   if (message.type === "login")
     return true
   console.log("CheckAuth: ", message)
-  let key = message.payload.session
   let now = new Date().getTime()
-  console.log("KEY",key)
-  console.log("AUTH",AUTH)
 
-  if (key && AUTH[key]) {
-    return now <= AUTH[key].valid
+  console.log(client.onacciSession)
+
+  if (client.onacciSession) {
+    return now <= client.onacciSession.valid
   }
   else
     return false
@@ -41,7 +39,6 @@ function setSession(username,session,client) {
     session: session,
     valid:  new Date().getTime() + 24 * 60 * 60 * 1000
   }
-  AUTH[session] = sesObj
   client.onacciSession = sesObj
 }
 

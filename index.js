@@ -92,7 +92,7 @@ function processOnline() {
 
   var i = 0, n = wss.clients ? wss.clients.length : 0, client = null;
   if (n < 1)
-    client.send(JSON.stringify({online: userList}))
+    client.send(JSON.stringify({online: false}))
 
   userList = wss.clients.map(conn => conn.onacciSession.username)
   client.send(JSON.stringify({online: userList}))
