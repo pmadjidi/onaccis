@@ -57,6 +57,9 @@ wss.on('connection', function (client) {
       console.log(new Date() + "Client disconnect " + ip + port + " reason: " + reasonCode + " description: " + description)
       console.log("Removing session")
       console.log(client.onacciSession)
+      console.log(CLIENTS.length)
+      CLIENTS = CLIENTS.filter(cl=>cl==client)
+      console.log(CLIENTS.length)
     });
 
 });
