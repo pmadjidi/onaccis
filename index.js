@@ -103,6 +103,8 @@ function onlineList() {
         return cl.onacciSession.username
   })
   console.log(userList)
+  userList = userList.filter(item=> item != null && item != undefined)
+  console.log(userList)
   return userList
 }
 
