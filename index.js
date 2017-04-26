@@ -88,8 +88,8 @@ else {
 
 function processOnline(message,client) {
   let userList = []
-  console.log("clients",wss.clients)
-  console.log("number of clients",wss.clients.length)
+  console.log("clients",wss.client)
+  console.log("number of clients",wss.client.length)
   return client.send(JSON.stringify({online: []}))
 
   var i = 0, n = wss.clients ? wss.clients.length : 0, client = null;
