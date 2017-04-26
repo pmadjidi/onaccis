@@ -48,8 +48,6 @@ wss.on('connection', function (client) {
   /** incomming message */
   client.on('message', function (message) {
   console.log(new Date() + "Got message: " + ip + port + " " + message)
-    /** broadcast message to all clients */
-  //  wss.broadcast(message, client);
   processMessage(message,client)
   });
 
@@ -68,7 +66,7 @@ function notifyClientsOffline(client) {
   console.log("Removing session")
   console.log(client.onacciSession)
   console.log(CLIENTS.length)
-  CLIENTS = CLIENTS.filter(cl=>cl==client)
+  CLIENTS = CLIENTS.filter(cl=>cl !== client)
   console.log(CLIENTS.length)
 //  CLIENTS.map(cl=>processOnline({},cl))
 }
