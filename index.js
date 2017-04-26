@@ -63,7 +63,9 @@ wss.on('connection', function (client) {
 
 function processMessage(message,client) {
   let m = JSON.parse(message)
-  if (login.checkAuth(m,client)) {
+  let auth = login.checkAuth(m,client)
+  console.log("message auth status: ",auth)
+  if (auth) {
   switch (m.type){
       case "login":
       login.process(m.payload,client)
