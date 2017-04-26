@@ -40,7 +40,6 @@ console.log((new Date()) + " WebSocket Secure server is up and running.");
 
 /** successful connection */
 wss.on('connection', function (client) {
-  CLIENTS.push(client)
   let ip =  client._socket.remoteAddress
   let port = client._socket.remotePort
   console.log((new Date()) + " A new WebSocket client was connected.");
@@ -50,22 +49,29 @@ wss.on('connection', function (client) {
   console.log(new Date() + "Got message: " + ip + port + " " + message)
     /** broadcast message to all clients */
   //  wss.broadcast(message, client);
+  notifyClientsOnline(client)
   processMessage(message,client)
   });
 
   client.on('close', function(reasonCode, description) {
       console.log(new Date() + "Client disconnect " + ip + port + " reason: " + reasonCode + " description: " + description)
-      console.log("Removing session")
-      console.log(client.onacciSession)
-      console.log(CLIENTS.length)
-      CLIENTS = CLIENTS.filter(cl=>cl==client)
-      console.log(CLIENTS.length)
-      notifyClientsOnline()
+      notifyClientsOffline(client)
     });
 });
 
+function notifyClientsOnline(client){
+  CLIENTS.push(client)
+  CLIENTS.map(cl=>processOnline({},cl))
+}
 
-
+function notifyClientsOffline(client) {
+  console.log("Removing session")
+  console.log(client.onacciSession)
+  console.log(CLIENTS.length)
+  CLIENTS = CLIENTS.filter(cl=>cl==client)
+  console.log(CLIENTS.length)
+  CLIENTS.map(cl=>processOnline({},cl))
+}
 
 
 function processMessage(message,client) {
@@ -93,12 +99,16 @@ else {
 }
 }
 
-function processOnline(message,client) {
+function onlineList() {
   let userList = CLIENTS.map(cl=>{
     if (cl.onacciSession)
       return cl.onacciSession.username
   })
-  client.send(JSON.stringify({type: "online",data: userList}))
+  return userList
+}
+
+function processOnline(message,client) {
+  client.send(JSON.stringify({type: "online",data: onlineList()}))
 }
 
 
