@@ -14,8 +14,7 @@ function checkAuth(message,client) {
   let key = message.payload.session
   let now = new Date().getTime()
   console.log("KEY",key)
-  console.log("AUTH.key",AUTH.key)
-  console.log("AUTH.key.valid", AUTH.key.valid)
+  console.log("AUTH",AUTH)
 
   if (key && AUTH.key) {
     return now <= AUTH.key.valid
