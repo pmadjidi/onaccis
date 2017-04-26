@@ -104,6 +104,7 @@ function onlineList() {
     if (cl.onacciSession)
       return cl.onacciSession.username
   })
+  console.log(userList)
   return userList
 }
 
