@@ -12,9 +12,10 @@ function checkAuth(message,client) {
     return true
   console.log("CheckAuth: ", message)
   let key = message.session
+  let now = new Date().getTime()
   if (key){
     if (AUTH.key) {
-      if (new Date().getTime() <= auth.key.valid)
+      if ( now <= auth.key.valid)
         return true
       delete AUTH.key
       return false

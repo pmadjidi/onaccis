@@ -78,8 +78,8 @@ function processMessage(message,client) {
   }
 }
 else {
-  console.log("Sending auth: false message to: ", message.user);
-  client.send(JSON.stringify({auth: "false", user: message.user}))
+  console.log("Sending auth: false message to: ", client.onacciSession.user);
+  client.send(JSON.stringify({auth: "false", user: client.onacciSession.user}))
 }
 }
 
