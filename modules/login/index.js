@@ -43,6 +43,7 @@ function setSession(username,session,client) {
     valid:  new Date().getTime() + 24 * 60 * 60 * 1000
   }
   AUTH.session = sesObj
+  console.log(AUTH)
   client.onacciSession = sesObj
 }
 
