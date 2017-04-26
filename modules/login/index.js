@@ -13,16 +13,14 @@ function checkAuth(message,client) {
   console.log("CheckAuth: ", message)
   let key = message.session
   let now = new Date().getTime()
-  if (key){
-    if (AUTH.key) {
-      if ( now <= auth.key.valid)
-        return true
-      delete AUTH.key
-      return false
-    }
-    return false
+  console.log("KEY",key)
+  console.oog("AUTH.key",AUTH.key)
+
+  if (key && AUTH.key) {
+    return now <= auth.key.valid
   }
-  return false
+  else
+    return false
 }
 
 let userDb = null
