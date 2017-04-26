@@ -93,9 +93,9 @@ function processOnline(message,client) {
   client.send(JSON.stringify({online: userList}))
 
 }
-}
 
 
+/*
 // broadcasting the message to all WebSocket clients.
 wss.broadcast = function (data, exclude) {
   var i = 0, n = this.clients ? this.clients.length : 0, client = null;
@@ -109,3 +109,4 @@ wss.broadcast = function (data, exclude) {
     else console.error('Error: the client state is ' + client.readyState);
   }
 };
+*/
