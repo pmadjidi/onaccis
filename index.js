@@ -105,6 +105,7 @@ function processOnline(message,client) {
   client.send(JSON.stringify({online: userList}))
 
 }
+}
 
 
 // broadcasting the message to all WebSocket clients.
