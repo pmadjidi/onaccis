@@ -101,8 +101,8 @@ else {
 
 function onlineList() {
   let userList = CLIENTS.map(cl=>{
-    if (cl.onacciSession && cl.onacciSession.username)
-      return cl.onacciSession.username
+    if (cl.onacciSession &&  cl.onacciSession.username != null)
+        return cl.onacciSession.username
   })
   console.log(userList)
   return userList
