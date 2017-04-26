@@ -87,6 +87,9 @@ else {
 
 function processOnline() {
   let userList = []
+  console.log(wss.clients)
+  console.log(wss.clients.length)
+
   var i = 0, n = wss.clients ? wss.clients.length : 0, client = null;
   if (n < 1)
     client.send(JSON.stringify({online: userList}))
