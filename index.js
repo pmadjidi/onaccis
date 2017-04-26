@@ -98,8 +98,7 @@ function processOnline(message,client) {
     if (cl.onacciSession)
       return cl.onacciSession.username
   })
-  client.send(JSON.stringify(type: "online",data: userList))
-
+  client.send(JSON.stringify({type: "online",data: userList}))
 }
 
 
