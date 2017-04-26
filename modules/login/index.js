@@ -6,6 +6,7 @@ let userUrl = "mongodb://localhost:27017/users"
 let sessionUrl = "mongodb://localhost:27017/sessions"
 
 
+
 function checkAuth(message,client) {
   if (message.type === "login")
     return true

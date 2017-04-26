@@ -83,13 +83,13 @@ function processMessage(message,client) {
   }
 }
 else {
-  console.log("Sending auth: false message to: ", client.onacciSession.user);
-  client.send(JSON.stringify({auth: "false", user: client.onacciSession.user}))
+  console.log("Sending auth: false message to: ", client.onacciSession.username);
+  client.send(JSON.stringify({auth: "false", user: client.onacciSession.username}))
 }
 }
 
 function processOnline(message,client) {
-  let userList = CLIENTS.map(cl=>cl.onacciSession.user)
+  let userList = CLIENTS.map(cl=>cl.onacciSession.username)
   client.send(JSON.stringify({online: userList}))
 
 }
