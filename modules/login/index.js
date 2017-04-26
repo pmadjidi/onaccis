@@ -16,8 +16,8 @@ function checkAuth(message,client) {
   console.log("KEY",key)
   console.log("AUTH",AUTH)
 
-  if (key && AUTH.key) {
-    return now <= AUTH.key.valid
+  if (key && AUTH[key]) {
+    return now <= AUTH[key].valid
   }
   else
     return false
@@ -41,9 +41,7 @@ function setSession(username,session,client) {
     session: session,
     valid:  new Date().getTime() + 24 * 60 * 60 * 1000
   }
-  console.log("SES",session)
   AUTH[session] = sesObj
-  console.log(AUTH)
   client.onacciSession = sesObj
 }
 
