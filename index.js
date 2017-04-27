@@ -99,7 +99,7 @@ else {
 
 function onlineList() {
   let userList = CLIENTS.map(cl=>{
-    if (cl.onacciSession &&  cl.onacciSession.username)
+    if (cl && cl.onacciSession &&  cl.onacciSession.username)
         return cl.onacciSession.username
   })
   console.log(userList)
@@ -110,6 +110,24 @@ function onlineList() {
 
 function processOnline(message,client) {
   client.send(JSON.stringify({type: "online",data: onlineList()}))
+}
+
+function processSignal(message,client) {
+  CLIENTS.foreach(cl=>{
+    if (cl && cl.onacciSession) {
+      let clientName =  cl.onacciSession.username
+      if (clientName === message.targetUser)
+      cl.send(JSON.stringify(message))
+    }
+  })
+
+  /*
+  { candidate:
+   { candidate: 'candidate:676152799 1 tcp 1518280447 130.237.31.162 9 typ host tcptype active generation 0 ufrag V+by network-id 1',
+     sdpMid: 'video',
+     sdpMLineIndex: 1 },
+  targetUser: 'payam' }
+  */
 }
 
 
