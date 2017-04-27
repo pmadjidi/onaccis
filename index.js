@@ -113,7 +113,7 @@ function processOnline(message,client) {
 }
 
 function processSignal(message,client) {
-  CLIENTS.foreach(cl=>{
+  CLIENTS.forEach(cl=>{
     if (cl && cl.onacciSession) {
       let clientName =  cl.onacciSession.username
       if (clientName === message.targetUser)
