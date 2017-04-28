@@ -51,9 +51,11 @@ wss.on('connection', function (client) {
   processMessage(message,client)
   });
 
+
+
   client.on('close', function(reasonCode, description) {
       console.log(new Date() + "Client disconnect " + ip + port + " reason: " + reasonCode + " description: " + description)
-      notifyClientsOffline(client)
+      this.client.onacciSession.status = false
     });
 });
 
@@ -62,14 +64,20 @@ function notifyClientsOnline(client){
 //  CLIENTS.map(cl=>processOnline({},cl))
 }
 
-function notifyClientsOffline(client) {
-  console.log("Removing session")
-  console.log(client.onacciSession)
-  console.log(CLIENTS.length)
-  CLIENTS = CLIENTS.filter(cl=>cl !== client)
-  console.log(CLIENTS.length)
-//  CLIENTS.map(cl=>processOnline({},cl))
+
+function pruneDeadSessions() {
+  CLIENTS = CLIENTS.map(cl=>
+    if (cl.onacciSession && cl.onacciSession.status !== deleted )
+      return cl
+    else {
+        console.log("deleting dead session",JSON.stringify(cl.onacciSession,null,4))
+    }
 }
+
+setInterval(pruneDeadSessions,30*1000)
+
+
+
 
 
 function processMessage(message,client) {
@@ -99,7 +107,7 @@ else {
 
 function onlineList() {
   let userList = CLIENTS.map(cl=>{
-    if (cl && cl.onacciSession &&  cl.onacciSession.username)
+    if (cl && cl.onacciSession &&  cl.onacciSession.username && cl.onacciSession.status !== false)
         return cl.onacciSession.username
   })
   console.log(userList)
