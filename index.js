@@ -96,6 +96,9 @@ function processMessage(message,client) {
       case "online":
       processOnline(m.payload,client)
       break
+      case "whoAmI":
+      processWhoAmI(m.payload,client)
+      break
       default:
         console.log("Undefined message type: ", m)
   }
@@ -104,6 +107,10 @@ else {
   console.log("Sending auth: false message to: ", client.onacciSession.username);
   client.send(JSON.stringify({auth: "false", user: client.onacciSession.username}))
 }
+}
+
+function processWhoAmI(message,client) {
+  client.send(JSON.stringify({type: "whoAmIAns",payload: client.onacciSession}))
 }
 
 function onlineList() {
