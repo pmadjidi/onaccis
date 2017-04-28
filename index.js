@@ -55,7 +55,7 @@ wss.on('connection', function (client) {
 
   client.on('close', function(reasonCode, description) {
       console.log(new Date() + "Client disconnect " + ip + port + " reason: " + reasonCode + " description: " + description)
-      this.client.onacciSession.status = false
+      this.onacciSession.status = false
     });
 });
 
