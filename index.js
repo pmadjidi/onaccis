@@ -55,7 +55,6 @@ wss.on('connection', function (client) {
 
   client.on('close', function(reasonCode, description) {
       console.log(new Date() + "Client disconnect " + ip + port + " reason: " + reasonCode + " description: " + description)
-      this.onacciSession.status = false
     });
 });
 
@@ -67,11 +66,8 @@ function notifyClientsOnline(client){
 
 function pruneDeadSessions() {
   CLIENTS = CLIENTS.map(cl=>{
-    if (cl.onacciSession && cl.onacciSession.status !== false )
+    if (cl  !== undefined )
       return cl
-    else {
-        console.log("deleting dead session",JSON.stringify(cl.onacciSession,null,4))
-    }
   })
 }
 
