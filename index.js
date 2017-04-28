@@ -67,7 +67,7 @@ function notifyClientsOnline(client){
 
 function pruneDeadSessions() {
   CLIENTS = CLIENTS.map(cl=>{
-    if (cl.onacciSession && cl.onacciSession.status !== deleted )
+    if (cl.onacciSession && cl.onacciSession.status !== false )
       return cl
     else {
         console.log("deleting dead session",JSON.stringify(cl.onacciSession,null,4))
