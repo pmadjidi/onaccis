@@ -60,15 +60,19 @@ wss.on('connection', function (client) {
 
 function notifyClientsOnline(client){
   CLIENTS.push(client)
-  console.log(wss)
+  //console.log(wss)
 //  CLIENTS.map(cl=>processOnline({},cl))
 }
 
 
 function pruneDeadSessions() {
   CLIENTS = CLIENTS.map(cl=>{
-    if (cl  !== undefined )
+    if (cl  === undefined ) {
+      console.log("PrunceDeadSesssions: Dead socket found")
+    }
+    else {
       return cl
+    }
   })
 }
 
