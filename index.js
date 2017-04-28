@@ -97,7 +97,7 @@ function processMessage(message,client) {
       case "online":
       processOnline(m.payload,client)
       break
-      case "whoAmIAns":
+      case "whoAmI":
       processWhoAmI(m.payload,client)
       break
       default:
