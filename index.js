@@ -60,6 +60,7 @@ wss.on('connection', function (client) {
 
 function notifyClientsOnline(client){
   CLIENTS.push(client)
+  console.log(wss)
 //  CLIENTS.map(cl=>processOnline({},cl))
 }
 
