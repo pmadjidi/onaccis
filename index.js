@@ -99,6 +99,9 @@ function processMessage(message,client) {
       break
       case "whoAmI":
       processWhoAmI(m.payload,client)
+      break,
+      case "offer":
+      processOffer(m.spd,client)
       break
       default:
         console.log("Undefined message type: ", m)
@@ -108,6 +111,10 @@ else {
   console.log("Sending auth: false message to: ", client.onacciSession.username);
   client.send(JSON.stringify({auth: "false", user: client.onacciSession.username}))
 }
+}
+
+function processOffer(message,client) {
+  console.log(JSON.parse(message))
 }
 
 function processWhoAmI(message,client) {
