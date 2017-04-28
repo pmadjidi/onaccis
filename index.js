@@ -99,7 +99,7 @@ function processMessage(message,client) {
       break
       case "whoAmI":
       processWhoAmI(m.payload,client)
-      break,
+      break
       case "offer":
       processOffer(m.spd,client)
       break
