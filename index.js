@@ -134,8 +134,10 @@ function processSignal(message,client) {
   CLIENTS.forEach(cl=>{
     if (cl && cl.onacciSession) {
       let clientName =  cl.onacciSession.username
-      if (clientName === message.targetUser)
-      cl.send(JSON.stringify({type: "signal",payload: message}))
+      if (clientName === message.targetUser) {
+        cl.send(JSON.stringify({type: "signal",payload: message}))
+        console.log("processSignal: ",message)
+      }
     }
   })
 
