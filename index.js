@@ -76,7 +76,7 @@ function pruneDeadSessions() {
   })
 }
 
-setInterval(pruneDeadSessions,30*1000)
+setInterval(pruneDeadSessions,10*1000)
 
 
 
@@ -100,9 +100,6 @@ function processMessage(message,client) {
       case "whoAmI":
       processWhoAmI(m.payload,client)
       break
-      case "offer":
-      processOffer(m.spd,client)
-      break
       default:
         console.log("Undefined message type: ", m)
   }
@@ -113,9 +110,6 @@ else {
 }
 }
 
-function processOffer(message,client) {
-  console.log(JSON.parse(message))
-}
 
 function processWhoAmI(message,client) {
   client.send(JSON.stringify({type: "whoAmIAns",payload: client.onacciSession}))
@@ -123,7 +117,7 @@ function processWhoAmI(message,client) {
 
 function onlineList() {
   let userList = CLIENTS.map(cl=>{
-    if (cl && cl.onacciSession &&  cl.onacciSession.username && cl.onacciSession.status !== false)
+    if (cl && cl.onacciSession)
         return cl.onacciSession.username
   })
   console.log(userList)
