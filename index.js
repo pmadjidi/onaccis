@@ -135,8 +135,9 @@ function processSignal(message,client) {
     if (cl && cl.onacciSession) {
       let clientName =  cl.onacciSession.username
       if (clientName === message.targetUser) {
-        cl.send(JSON.stringify({type: "signal",payload: message}))
-        console.log("processSignal: ",message)
+        let payload = JSON.stringify({type: "signal",payload: message})
+        cl.send(payload)
+        console.log("Sendigng processSignal: ",payload)
       }
     }
   })

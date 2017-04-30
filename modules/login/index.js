@@ -5,7 +5,7 @@ const MongoClient = require('mongodb').MongoClient;
 let userUrl = "mongodb://localhost:27017/users"
 let sessionUrl = "mongodb://localhost:27017/sessions"
 
-
+let OLINESES = {}
 
 function checkAuth(message,client) {
   if (message.type === "login")
@@ -42,7 +42,6 @@ function setSession(username,session,client) {
   }
   client.onacciSession = sesObj
 }
-
 
 
 function findUser(username){
