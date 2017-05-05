@@ -111,7 +111,7 @@ function processWhoAmI(message,conn) {
 function onlineList(username) {
   if (username)
   return  CLIENTS.map(cl=> {
-    if(cl.username !== username)
+    if(cl.username !== username || cl.username === undefined)
       return cl.username
   })
   return []
