@@ -115,6 +115,8 @@ function onlineList(username) {
     printConn(conn)
     if(conn.username !== username || conn.username === undefined)
       return conn.username
+    else
+    return 
   })
   return []
 }
