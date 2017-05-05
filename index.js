@@ -95,7 +95,7 @@ else {
 
 
 function processWhoAmI(message,conn) {
-  conn.client.send(JSON.stringify({type: "whoAmIAns",payload: client.onacciSession}))
+  conn.client.send(JSON.stringify({type: "whoAmIAns",payload: conn.client.session}))
 }
 
 function onlineList() {
