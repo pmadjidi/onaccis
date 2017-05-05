@@ -118,7 +118,9 @@ function onlineList(username) {
 }
 
 function processOnline(message,conn) {
-  conn.client.send(JSON.stringify({type: "online",data: onlineList(conn.username)}))
+  let onlineList = onlineList(conn.username)
+  console.log(onlineList)
+  conn.client.send(JSON.stringify({type: "online",data: onlineList}))
 }
 
 function processSignal(message,conn) {
