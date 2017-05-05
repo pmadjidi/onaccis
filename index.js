@@ -57,7 +57,7 @@ wss.on('connection', client => {
   });
 
   client.on('close', function(reasonCode, description) {
-      console.log(new Date() + "Client disconnect " + ip + port + " reason: " + reasonCode + " description: " + description)
+      console.log(new Date() + "Client disconnect " + conn.ip + conn.port + " reason: " + reasonCode + " description: " + description)
       if (conn.index > -1) {
         CLIENTS.splice(conn.index, 1);
       }
