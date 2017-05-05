@@ -53,6 +53,7 @@ function createSession(conn) {
   conn.auth = true
   conn.session = crypto.randomBytes(64).toString('hex')
   conn.valid =  new Date().getTime() + 24 * 60 * 60 * 1000
+  console.log("Setting session on conn: ",conn)
 }
 
 function verifyUser(user,suggestedPassword){
@@ -88,13 +89,13 @@ function process(message,conn){
     if (status) {
       console.log("Auth accepted user " + conn.username)
       createSession(conn)
-      return client.send(JSON.stringify({auth: "true",user: conn.username,
+      return conn.client.send(JSON.stringify({auth: "true",user: conn.username,
        session: conn.session}))
     }
     else {
       console.log("Auth denied user " + message.username)
       conn.auth  = false
-    return client.send(JSON.stringify({auth: conn.auth, user: message.username}))
+    return conn.client.send(JSON.stringify({auth: conn.auth, user: message.username}))
   }
   })
   .catch(err=>{
@@ -103,7 +104,7 @@ function process(message,conn){
    .then(inserted=>{
      console.log("User created: ",inserted);
      createSession(conn)
-     client.send(JSON.stringify({auth: conn.auth, user: conn.username,
+     conn.client.send(JSON.stringify({auth: conn.auth, user: conn.username,
     session: conn.session}))
  })
  }
