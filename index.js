@@ -98,12 +98,15 @@ function processWhoAmI(message,conn) {
   conn.client.send(JSON.stringify({type: "whoAmIAns",payload: conn.client.session}))
 }
 
-function onlineList() {
-  return  CLIENTS.map(cl=>cl.username)
+function onlineList(username) {
+  return  CLIENTS.map(cl=> {
+    if(cl.username !== username)
+      return cl.username
+  })
 }
 
 function processOnline(message,conn) {
-  conn.client.send(JSON.stringify({type: "online",data: onlineList()}))
+  conn.client.send(JSON.stringify({type: "online",data: onlineList(conn.username)}))
 }
 
 function processSignal(message,conn) {
