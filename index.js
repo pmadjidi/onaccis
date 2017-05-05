@@ -12,6 +12,7 @@ const pkey = fs.readFileSync('./ssl/key.pem'),
   options = {key: pkey, cert: pcert, passphrase: '123456789'};
 let wss = null, sslSrv = null
 let CLIENTS = []
+let CINDEX = -1
 
 // use express static to deliver resources HTML, CSS, JS, etc)
 // from the public folder
@@ -39,131 +40,78 @@ console.log((new Date()) + " WebSocket Secure server is up and running.");
 
 
 /** successful connection */
-wss.on('connection', function (client) {
-  let ip =  client._socket.remoteAddress
-  let port = client._socket.remotePort
+wss.on('connection', client => {
+  let conn = {}
+  conn.ip =  client._socket.remoteAddress
+  conn.port = client._socket.remotePort
+  conn.client = client
+  conn.auth = false
+  conn.index = ++CINDEX
   console.log((new Date()) + " A new WebSocket client was connected.");
-  console.log((new Date()) + ' New websocket connection from %s:%d', ip,port);
-  notifyClientsOnline(client)
-  /** incomming message */
+  console.log((new Date()) + ' New websocket connection from: ',conn);
+  CLIENTS[conn.index] = conn
+
   client.on('message', function (message) {
-  console.log(new Date() + "Got message: " + ip + port + " " + message)
-  processMessage(message,client)
+  console.log(new Date() + "Got message: " + conn.ip + conn.port + " " + message)
+  processMessage(message,conn)
   });
-
-
 
   client.on('close', function(reasonCode, description) {
       console.log(new Date() + "Client disconnect " + ip + port + " reason: " + reasonCode + " description: " + description)
+      if (conn.index > -1) {
+        CLIENTS.splice(conn.index, 1);
+      }
     });
 });
 
-function notifyClientsOnline(client){
-  CLIENTS.push(client)
-  //console.log(wss)
-//  CLIENTS.map(cl=>processOnline({},cl))
-}
-
-
-function pruneDeadSessions() {
-  CLIENTS = CLIENTS.map(cl=>{
-    if (cl  === undefined ) {
-      console.log("PrunceDeadSesssions: Dead socket found")
-    }
-    else {
-      return cl
-    }
-  })
-}
-
-setInterval(pruneDeadSessions,10*1000)
 
 
 
-
-
-function processMessage(message,client) {
+function processMessage(message,conn) {
   let m = JSON.parse(message)
-  let auth = login.checkAuth(m,client)
-  console.log("message auth status: ",auth)
-  if (auth) {
+  if (conn.auth) {
   switch (m.type){
       case "login":
-      login.process(m.payload,client)
+      login.process(m.payload,conn)
       break
       case "signal":
-      processSignal(m.payload,client)
+      processSignal(m.payload,conn)
       break
       case "online":
-      processOnline(m.payload,client)
+      processOnline(m.payload,conn)
       break
       case "whoAmI":
-      processWhoAmI(m.payload,client)
+      processWhoAmI(m.payload,conn)
       break
       default:
         console.log("Undefined message type: ", m)
   }
 }
 else {
-  console.log("Sending auth: false message to: ", client.onacciSession.username);
-  client.send(JSON.stringify({auth: "false", user: client.onacciSession.username}))
+  console.log("Sending auth: false message to: ", conn.username);
+  conn.client.send(JSON.stringify({auth: "false", user: conn.username}))
 }
 }
 
 
-function processWhoAmI(message,client) {
-  client.send(JSON.stringify({type: "whoAmIAns",payload: client.onacciSession}))
+function processWhoAmI(message,conn) {
+  conn.client.send(JSON.stringify({type: "whoAmIAns",payload: client.onacciSession}))
 }
 
 function onlineList() {
-  let userList = CLIENTS.map(cl=>{
-    if (cl && cl.onacciSession)
-        return cl.onacciSession.username
-  })
-  console.log(userList)
-  userList = userList.filter(item=> item != null && item != undefined)
-  console.log(userList)
-  return userList
+  return  CLIENTS.map(cl=>cl.username)
 }
 
-function processOnline(message,client) {
-  client.send(JSON.stringify({type: "online",data: onlineList()}))
+function processOnline(message,conn) {
+  conn.client.send(JSON.stringify({type: "online",data: onlineList()}))
 }
 
-function processSignal(message,client) {
+function processSignal(message,conn) {
   CLIENTS.forEach(cl=>{
-    if (cl && cl.onacciSession) {
-      let clientName =  cl.onacciSession.username
-      if (clientName === message.targetUser) {
+      if (cl.username === message.targetUser) {
         let payload = JSON.stringify({type: "signal",payload: message})
-        cl.send(payload)
+        cl.client.send(payload)
         console.log("Sendigng processSignal: ",payload)
       }
-    }
-  })
-
-  /*
-  { candidate:
-   { candidate: 'candidate:676152799 1 tcp 1518280447 130.237.31.162 9 typ host tcptype active generation 0 ufrag V+by network-id 1',
-     sdpMid: 'video',
-     sdpMLineIndex: 1 },
-  targetUser: 'payam' }
-  */
-}
-
-
-/*
-// broadcasting the message to all WebSocket clients.
-wss.broadcast = function (data, exclude) {
-  var i = 0, n = this.clients ? this.clients.length : 0, client = null;
-  if (n < 1) return;
-  console.log("Broadcasting message to all " + n + " WebSocket clients.");
-  for (; i < n; i++) {
-    client = this.clients[i];
-    // don't send the message to the sender...
-    if (client === exclude) continue;
-    if (client.readyState === client.OPEN) client.send(data);
-    else console.error('Error: the client state is ' + client.readyState);
+    })
   }
-};
-*/

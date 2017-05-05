@@ -5,18 +5,15 @@ const MongoClient = require('mongodb').MongoClient;
 let userUrl = "mongodb://localhost:27017/users"
 let sessionUrl = "mongodb://localhost:27017/sessions"
 
-let OLINESES = {}
 
-function checkAuth(message,client) {
+
+function checkAuth(message,conn) {
   if (message.type === "login")
     return true
-  console.log("CheckAuth: ", message)
   let now = new Date().getTime()
 
-  console.log(client.onacciSession)
-
-  if (client.onacciSession) {
-    return now <= client.onacciSession.valid
+  if (conn.valid) {
+    return now <= conn.valid
   }
   else
     return false
@@ -33,15 +30,6 @@ MongoClient.connect(sessionUrl)
     .catch(err=>console.log("Error Connecting to database " + sessionUrl + err))
 
 
-
-function setSession(username,session,client) {
-  let sesObj = {
-    username: username,
-    session: session,
-    valid:  new Date().getTime() + 24 * 60 * 60 * 1000
-  }
-  client.onacciSession = sesObj
-}
 
 
 function findUser(username){
@@ -61,11 +49,10 @@ function createUser(username,password){
   return userDb.collection("users").insert(arg)
 }
 
-function createSession(username,client) {
-  let session = crypto.randomBytes(64).toString('hex')
-  setSession(username,session,client)
-  console.log("SES ",session);
-  return session
+function createSession(conn) {
+  conn.auth = true
+  conn.session = crypto.randomBytes(64).toString('hex')
+  conn.valid =  new Date().getTime() + 24 * 60 * 60 * 1000
 }
 
 function verifyUser(user,suggestedPassword){
@@ -85,31 +72,40 @@ function sha512(password, salt){
     };
 };
 
-function process(message,client){
+function process(message,conn){
   console.log(new Date() + "Processing login....",JSON.stringify(message,null,4))
-  return findUser(message.username)
+  conn.username = message.username
+  conn.auth = false
+  return findUser(conn.username)
   .then(user=>{
     if (!user)
       throw "NotFound"
-    console.log("Found user " + user.username)
+    console.log("Found user:" + conn.username)
     return user
   })
   .then(user=>verifyUser(user,message.password))
   .then(status=>{
     if (status) {
-      console.log("Auth accepted user " + message.username)
-      return client.send(JSON.stringify({auth: "true",user: message.username, session: createSession(message.username,client)}))
+      console.log("Auth accepted user " + conn.username)
+      createSession(conn)
+      return client.send(JSON.stringify({auth: "true",user: conn.username,
+       session: conn.session}))
     }
     else {
       console.log("Auth denied user " + message.username)
-    return client.send(JSON.stringify({auth: "false", user: message.username}))
+      conn.auth  = false
+    return client.send(JSON.stringify({auth: conn.auth, user: message.username}))
   }
   })
   .catch(err=>{
-
   if (err === "NotFound") {
   createUser(message.username,message.password)
-   .then(client.send(JSON.stringify({auth: "true", user: message.username, session: createSession(message.username,client)})))
+   .then(inserted=>{
+     console.log("User created: ",inserted);
+     createSession(conn)
+     client.send(JSON.stringify({auth: conn.auth, user: conn.username,
+    session: conn.session}))
+ })
  }
  else {
      console.log(err)
