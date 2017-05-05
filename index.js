@@ -69,11 +69,11 @@ wss.on('connection', client => {
 
 function processMessage(message,conn) {
   let m = JSON.parse(message)
+  if (m.type === "login")
+    login.process(m.payload,conn)
+
   if (conn.auth) {
   switch (m.type){
-      case "login":
-      login.process(m.payload,conn)
-      break
       case "signal":
       processSignal(m.payload,conn)
       break
