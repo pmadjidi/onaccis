@@ -53,7 +53,6 @@ function createSession(conn) {
   conn.auth = true
   conn.session = crypto.randomBytes(64).toString('hex')
   conn.valid =  new Date().getTime() + 24 * 60 * 60 * 1000
-  console.log("Setting session on conn: ",conn)
 }
 
 function verifyUser(user,suggestedPassword){

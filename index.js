@@ -53,7 +53,7 @@ wss.on('connection', client => {
 
   client.on('message', function (message) {
   console.log(new Date() + "Got message: " + conn.ip + conn.port + " " + message)
-  processMessage(message,conn)
+  return processMessage(message,conn)
   });
 
   client.on('close', function(reasonCode, description) {
@@ -76,19 +76,20 @@ function printConn(conn){
 
 function processMessage(message,conn) {
   let m = JSON.parse(message)
-  if (m.type === "login")
-    login.process(m.payload,conn)
+  if (m.type === "login"){
+    return login.process(m.payload,conn)
+  }
 
   if (conn.auth) {
   switch (m.type){
       case "signal":
-      processSignal(m.payload,conn)
+      return processSignal(m.payload,conn)
       break
       case "online":
-      processOnline(m.payload,conn)
+      return processOnline(m.payload,conn)
       break
       case "whoAmI":
-      processWhoAmI(m.payload,conn)
+      return processWhoAmI(m.payload,conn)
       break
       default:
         console.log("Undefined message type: ", m)
