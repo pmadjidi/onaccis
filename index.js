@@ -71,6 +71,7 @@ function printConn(conn){
   console.log("Port: ",conn.port)
   console.log("Auth: ",conn.auth)
   console.log("index: ",conn.index)
+  console.log("Username: ",conn.username);
 }
 
 
