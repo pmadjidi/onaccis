@@ -103,7 +103,9 @@ else {
 
 
 function processWhoAmI(message,conn) {
-  conn.client.send(JSON.stringify({type: "whoAmIAns",payload: {session: conn.session,username: conn.username}))
+  conn.client.send(JSON.stringify({type: "whoAmIAns",
+    payload: {session: conn.session,username: conn.username}
+  }))
 }
 
 function onlineList(username) {
