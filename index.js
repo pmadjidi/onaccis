@@ -114,7 +114,7 @@ function onlineList(username) {
   return  CLIENTS.map(conn=> {
     if(conn.username !== username || conn.username === undefined)
       return conn.username
-  }).filter(name => name === undefined)
+  }).filter(name => name !== undefined)
   return []
 }
 
