@@ -67,10 +67,10 @@ wss.on('connection', client => {
 
 
 function printConn(conn){
-  console.log("\nIP: ",conn.ip)
-  console.log("\nPort: ",conn.port)
-  console.log("\nAuth: ",conn.auth)
-  console.log("\nindex: ",conn.index)
+  console.log("IP: ",conn.ip)
+  console.log("Port: ",conn.port)
+  console.log("Auth: ",conn.auth)
+  console.log("index: ",conn.index)
 }
 
 
@@ -109,10 +109,12 @@ function processWhoAmI(message,conn) {
 }
 
 function onlineList(username) {
+  if (username)
   return  CLIENTS.map(cl=> {
-    if( cl  && cl.username !== username && cl.username !== null && cl.username !== undefined)
+    if(cl.username !== username)
       return cl.username
   })
+  return []
 }
 
 function processOnline(message,conn) {
