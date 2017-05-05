@@ -48,7 +48,7 @@ wss.on('connection', client => {
   conn.auth = false
   conn.index = ++CINDEX
   console.log((new Date()) + " A new WebSocket client was connected.");
-  console.log((new Date()) + ' New websocket connection from: ',conn);
+  printConn(conn)
   CLIENTS[conn.index] = conn
 
   client.on('message', function (message) {
@@ -59,12 +59,19 @@ wss.on('connection', client => {
   client.on('close', function(reasonCode, description) {
       console.log(new Date() + "Client disconnect " + conn.ip + conn.port + " reason: " + reasonCode + " description: " + description)
       if (conn.index > -1) {
+        console.log("Deleting client at index: ",conn.index);
         CLIENTS.splice(conn.index, 1);
       }
     });
 });
 
 
+function printConn(conn){
+  console.log("\nIP: ",conn.ip)
+  console.log("\nPort: ",conn.port)
+  console.log("\nAuth: ",conn.auth)
+  console.log("\nindex: ",conn.index)
+}
 
 
 function processMessage(message,conn) {
