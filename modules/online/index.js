@@ -44,7 +44,7 @@ function boradcastLogin() {
   CLIENTS.forEach(cl=>{
       let oList = onlineList(cl.username)
       cl.client.send(JSON.stringify({type: "online",data: oList}))
-}
+})
 }
 
 
