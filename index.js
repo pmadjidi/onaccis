@@ -110,11 +110,18 @@ function processWhoAmI(message,conn) {
 }
 
 function onlineList(username) {
-  if (username)
-  return  CLIENTS.map(conn=> {
+  if (username)  {
+  let unique = []
+  let users =   CLIENTS.map(conn=> {
     if(conn.username !== username || conn.username === undefined)
       return conn.username
   }).filter(name => name !== undefined)
+  for (let i = 0; i < users.length; i++) {
+      let current = users[i];
+      if (unique.indexOf(current) < 0) unique.push(current);
+  }
+  return unique
+}
   return []
 }
 
