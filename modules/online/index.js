@@ -14,7 +14,8 @@ function addConn(conn) {
 function rmConn(conn) {
   if (conn.index > -1) {
     console.log("Deleting client at index: ",conn.index);
-    CLIENTS.splice(conn.index, 1);
+    CLIENTS.splice(conn.index, 1)
+    boradcastLogin()
   }
 }
 
@@ -48,6 +49,8 @@ function boradcastLogin() {
       cl.client.send(JSON.stringify({type: "online",data: oList}))
 })
 }
+
+
 
 
 function processSignal(message,conn) {
