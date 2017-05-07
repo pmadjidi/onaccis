@@ -59,6 +59,13 @@ wss.on('connection', client => {
       console.log(new Date() + "Client disconnect " + conn.ip + conn.port + " reason: " + reasonCode + " description: " + description)
       online.rmConn(conn)
     });
+
+    client.on('error', function(error) {
+        console.log(new Date() + "Client in error state " + error)
+      //  online.rmConn(conn)
+      });
+
+
 });
 
 
