@@ -11,8 +11,6 @@ const pkey = fs.readFileSync('./ssl/key.pem'),
   pcert = fs.readFileSync('./ssl/cert.pem'),
   options = {key: pkey, cert: pcert, passphrase: '123456789'};
 let wss = null, sslSrv = null
-let CLIENTS = []
-let CINDEX = -1
 
 // use express static to deliver resources HTML, CSS, JS, etc)
 // from the public folder
@@ -46,10 +44,11 @@ wss.on('connection', client => {
   conn.port = client._socket.remotePort
   conn.client = client
   conn.auth = false
-  conn.index = ++CINDEX
+  conn.index = online.incIndex()
   console.log((new Date()) + " A new WebSocket client was connected.");
   printConn(conn)
-  CLIENTS[conn.index] = conn
+  online.addConn(conn)
+
 
   client.on('message', function (message) {
   console.log(new Date() + "Got message: " + conn.ip + conn.port + " " + message)
@@ -58,10 +57,7 @@ wss.on('connection', client => {
 
   client.on('close', function(reasonCode, description) {
       console.log(new Date() + "Client disconnect " + conn.ip + conn.port + " reason: " + reasonCode + " description: " + description)
-      if (conn.index > -1) {
-        console.log("Deleting client at index: ",conn.index);
-        CLIENTS.splice(conn.index, 1);
-      }
+      online.rmConn(conn)
     });
 });
 
@@ -84,10 +80,10 @@ function processMessage(message,conn) {
   if (conn.auth) {
   switch (m.type){
       case "signal":
-      return processSignal(m.payload,conn)
+      return online.processSignal(m.payload,conn)
       break
       case "online":
-      return processOnline(m.payload,conn)
+      return online.processOnline(m.payload,conn)
       break
       case "whoAmI":
       return processWhoAmI(m.payload,conn)
@@ -108,35 +104,3 @@ function processWhoAmI(message,conn) {
     payload: {session: conn.session,username: conn.username}
   }))
 }
-
-function onlineList(username) {
-  if (username)  {
-  let unique = []
-  let users =   CLIENTS.map(conn=> {
-    if(conn.username !== username || conn.username === undefined)
-      return conn.username
-  }).filter(name => name !== undefined)
-  for (let i = 0; i < users.length; i++) {
-      let current = users[i];
-      if (unique.indexOf(current) < 0) unique.push(current);
-  }
-  return unique
-}
-  return []
-}
-
-function processOnline(message,conn) {
-  let oList = onlineList(conn.username)
-  console.log(oList)
-  conn.client.send(JSON.stringify({type: "online",data: oList}))
-}
-
-function processSignal(message,conn) {
-  CLIENTS.forEach(cl=>{
-      if (cl.username === message.targetUser) {
-        let payload = JSON.stringify({type: "signal",payload: message})
-        cl.client.send(payload)
-        console.log("Sendigng processSignal: ",payload)
-      }
-    })
-  }
