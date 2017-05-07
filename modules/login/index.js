@@ -73,7 +73,7 @@ function sha512(password, salt){
     };
 };
 
-function process(message,conn){
+function process(message,conn,broadFunc){
   console.log(new Date() + "Processing login....",JSON.stringify(message,null,4))
   conn.username = message.username
   conn.auth = false
@@ -89,6 +89,7 @@ function process(message,conn){
     if (status) {
       console.log("Auth accepted user " + conn.username)
       createSession(conn)
+      broadFunc()
       return conn.client.send(JSON.stringify({auth: "true",user: conn.username,
        session: conn.session}))
     }
@@ -104,6 +105,7 @@ function process(message,conn){
    .then(inserted=>{
      console.log("User created: ",inserted);
      createSession(conn)
+     broadFunc()
      conn.client.send(JSON.stringify({auth: conn.auth, user: conn.username,
     session: conn.session}))
  })

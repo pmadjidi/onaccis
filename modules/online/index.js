@@ -43,6 +43,8 @@ function processOnline(message,conn) {
 function boradcastLogin() {
   CLIENTS.forEach(cl=>{
       let oList = onlineList(cl.username)
+      console.log("In BroadcastLogin");
+      console.log(cl.username,oList)
       cl.client.send(JSON.stringify({type: "online",data: oList}))
 })
 }
