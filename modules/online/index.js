@@ -46,7 +46,11 @@ function boradcastLogin() {
       let oList = onlineList(cl.username)
       console.log("In BroadcastLogin");
       console.log(cl.username,oList)
+      try {
       cl.client.send(JSON.stringify({type: "online",data: oList}))
+    } catch (err) {
+      console.log("Error: ",err)
+      }
 })
 }
 
