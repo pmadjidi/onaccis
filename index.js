@@ -1,6 +1,7 @@
 "use strict"
 const login = require('./modules/login/')
 const online = require('./modules/online/')
+const channels = require('./modules/channels/')
 const WebSocketServer = require('ws').Server,
   express = require('express'),
   https = require('https'),
@@ -91,6 +92,9 @@ function processMessage(message,conn) {
       break
       case "online":
       return online.processOnline(m.payload,conn)
+      break
+      case "channels":
+      return channels.process(m.payload,conn)
       break
       case "whoAmI":
       return processWhoAmI(m.payload,conn)
