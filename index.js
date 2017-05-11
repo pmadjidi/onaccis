@@ -10,6 +10,10 @@ const WebSocketServer = require('ws').Server,
 
 const pkey = fs.readFileSync('./ssl/key.pem'),
   pcert = fs.readFileSync('./ssl/cert.pem'),
+
+
+
+
   options = {key: pkey, cert: pcert, passphrase: '123456789'};
 let wss = null, sslSrv = null
 
@@ -94,10 +98,13 @@ function processMessage(message,conn) {
       return online.processOnline(m.payload,conn)
       break
       case "channels":
-      return channels.process(m.payload,conn)
+      return channels.getUserChannels(m.payload,conn)
       break
       case "whoAmI":
       return processWhoAmI(m.payload,conn)
+      break
+      case "message":
+      return processMessage(m.payload,conn)
       break
       default:
         console.log("Undefined message type: ", m)
@@ -109,6 +116,10 @@ else {
 }
 }
 
+
+function processMessage(message,conn){
+  
+}
 
 function processWhoAmI(message,conn) {
   conn.client.send(JSON.stringify({type: "whoAmIAns",
