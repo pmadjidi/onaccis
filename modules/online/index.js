@@ -67,7 +67,7 @@ function processSignal(message,conn) {
     })
   }
 
-  function processMessage(message,conn) {
+  function _processMessageUser(message,conn) {
     CLIENTS.forEach(cl=>{
         if (cl.username === message.targetUser) {
           let payload = JSON.stringify({type: "message",payload: message})
@@ -78,6 +78,21 @@ function processSignal(message,conn) {
     }
 
 
+      function _processMessageChannel(message,conn) {
+        CLIENTS.forEach(cl=>{
+              let payload = JSON.stringify({type: "message",payload: message})
+              cl.client.send(payload)
+              console.log("Sendigng processMessage: ",payload)
+          })
+        }
+
+      function processMessage(message,conn) {
+        if (message.messageT == "channel")
+           return _processMessageChannel(message,conn)
+        else
+          return _processMessageUser(message,conn)
+
+      }
 
     module.exports = {
       processSignal,
