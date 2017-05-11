@@ -57,7 +57,7 @@ wss.on('connection', client => {
 
   client.on('message', function (message) {
   console.log(new Date() + "Got message: " + conn.ip + conn.port + " " + message)
-  return processMessage(message,conn)
+  return routeMessage(message,conn)
   });
 
   client.on('close', function(reasonCode, description) {
@@ -83,11 +83,8 @@ function printConn(conn){
 }
 
 
-function processMessage(message,conn) {
+function routeMessage(message,conn) {
   let m = JSON.parse(message)
-  if (m.type === "login"){
-    return login.process(m.payload,conn,online.boradcastLogin)
-  }
 
   if (conn.auth) {
   switch (m.type){
@@ -104,22 +101,24 @@ function processMessage(message,conn) {
       return processWhoAmI(m.payload,conn)
       break
       case "message":
-      return processMessage(m.payload,conn)
+      return online.processMessage(m.payload,conn)
       break
       default:
         console.log("Undefined message type: ", m)
   }
 }
 else {
-  console.log("Sending auth: false message to: ", conn.username);
-  conn.client.send(JSON.stringify({auth: "false", user: conn.username}))
+  if (m.type !== "login" ) {
+    console.log("unauthenticated, redirecting to login.....", conn.username);
+    return conn.client.send(JSON.stringify({auth: "false", user: conn.username}))
+  }
+
+  console.log("Processing login.....", conn.username);
+  return login.process(m.payload,conn,online.boradcastLogin)
 }
 }
 
 
-function processMessage(message,conn){
-  
-}
 
 function processWhoAmI(message,conn) {
   conn.client.send(JSON.stringify({type: "whoAmIAns",

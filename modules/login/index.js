@@ -77,7 +77,6 @@ function process(message,conn,broadFunc){
   console.log(1)
   console.log(new Date() + "Processing login....",JSON.stringify(message,null,4))
   conn.username = message.username
-  conn.auth = false
   return findUser(conn.username)
   .then(user=>{
     if (!user)

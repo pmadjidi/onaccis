@@ -67,9 +67,21 @@ function processSignal(message,conn) {
     })
   }
 
+  function processMessage(message,conn) {
+    CLIENTS.forEach(cl=>{
+        if (cl.username === message.targetUser) {
+          let payload = JSON.stringify({type: "message",payload: message})
+          cl.client.send(payload)
+          console.log("Sendigng processMessage: ",payload)
+        }
+      })
+    }
+
+
 
     module.exports = {
       processSignal,
+      processMessage,
       boradcastLogin,
       processOnline,
       onlineList,
