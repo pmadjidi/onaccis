@@ -87,6 +87,8 @@ function processSignal(message,conn) {
         }
 
       function processMessage(message,conn) {
+        let time = new Date().getTime()
+        message.time = time
         if (message.messageT == "channel")
            return _processMessageChannel(message,conn)
         else
