@@ -69,7 +69,7 @@ function processSignal(message,conn) {
 
   function _processMessageUser(message,conn) {
     CLIENTS.forEach(cl=>{
-        if (cl.username === message.targetUser || cl.username === message.sourceUser) {
+        if (cl.username === message.targetUser) {
           let payload = JSON.stringify({type: "message",payload: message})
           cl.client.send(payload)
           console.log("Sendigng processMessage: ",payload)
