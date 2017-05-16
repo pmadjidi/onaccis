@@ -38,19 +38,17 @@ function onlineList(username) {
 function processOnline(message,conn) {
   let oList = onlineList(conn.username)
   console.log(oList)
-  conn.client.send(JSON.stringify({type: "online",data: oList}))
+  let payload = {type: "online",data: oList}
+  send(payload,conn)
 }
 
 function boradcastLogin() {
-  CLIENTS.forEach(cl=>{
-      let oList = onlineList(cl.username)
+  CLIENTS.forEach(conn=>{
+      let oList = onlineList(conn.username)
       console.log("In BroadcastLogin");
-      console.log(cl.username,oList)
-      try {
-      cl.client.send(JSON.stringify({type: "online",data: oList}))
-    } catch (err) {
-      console.log("Error: ",err)
-      }
+      console.log(conn.username,oList)
+      let payload = {type: "online",data: oList}
+      send(payload,conn)
 })
 }
 
@@ -58,30 +56,40 @@ function boradcastLogin() {
 
 
 function processSignal(message,conn) {
-  CLIENTS.forEach(cl=>{
-      if (cl.username === message.targetUser) {
-        let payload = JSON.stringify({type: "signal",payload: message})
-        cl.client.send(payload)
-        console.log("Sendigng processSignal: ",payload)
+  CLIENTS.forEach(conn=>{
+      if (conn.username === message.targetUser) {
+        let payload = {type: "signal",payload: message}
+        send(payload,conn)
       }
     })
   }
 
   function _processMessageUser(message,conn) {
-    CLIENTS.forEach(cl=>{
-        if (cl.username === message.targetUser) {
-          let payload = JSON.stringify({type: "message",payload: message})
-          cl.client.send(payload)
-          console.log("Sendigng processMessage: ",payload)
+    console.log("_processMessage", message);
+    CLIENTS.forEach(conn=>{
+        if (conn.username === message.targetUser || conn.username === message.sourceUser ) {
+          let payload = {type: "message",payload: message}
+          // console.log(cl.username,payload);
+        send(payload,conn)
         }
       })
     }
 
+    function send(payload,conn) {
+      let payloadString = JSON.stringify(payload)
+      try {
+        if (payloadString)
+          conn.client.send(payloadString)
+    } catch (err) {
+      console.log(err,payload);
+      console.log("Send: Payload String, ",payloadString);
+    }
+    }
 
       function _processMessageChannel(message,conn) {
         CLIENTS.forEach(cl=>{
-              let payload = JSON.stringify({type: "message",payload: message})
-              cl.client.send(payload)
+              let payload = {type: "message",payload: message}
+              send(payload,conn)
               console.log("Sendigng processMessage: ",payload)
           })
         }
@@ -89,11 +97,13 @@ function processSignal(message,conn) {
       function processMessage(message,conn) {
         let time = new Date().getTime()
         message.time = time
-        if (message.messageT == "channel")
-           return _processMessageChannel(message,conn)
+        let messageType = message.messageT
+        if (messageType == "channel")
+            _processMessageChannel(message,conn)
+        if (messageType == "P2P")
+            _processMessageUser(message,conn)
         else
-          return _processMessageUser(message,conn)
-
+          console.log("Error processMessage, Unkown message type: ", messageType);
       }
 
     module.exports = {
