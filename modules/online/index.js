@@ -120,17 +120,19 @@ function processSignal(message,conn) {
         let messageType = message.messageT
         if (messageType == "channel")
             _processMessageChannel(message,conn)
+            _chStore(payload)
         if (messageType == "P2P")
+            _p2pStore(payload)
             _processMessageUser(message,conn)
         else
           console.log("Error processMessage, Unkown message type: ", messageType);
       }
 
-      function p2pstore(payload) {
+      function _p2pStore(payload) {
          p2pDb.collection("p2p").insert(payload)
       }
 
-      function chstore(payload) {
+      function _chStore(payload) {
         chDb.collection("channel").insert(payload)
       }
 
