@@ -1,6 +1,6 @@
 "use strict"
 
-
+const MongoClient = require('mongodb').MongoClient;
 let p2pUrl = "mongodb://localhost:27017/p2p"
 let chUrl = "mongodb://localhost:27017/channel"
 
