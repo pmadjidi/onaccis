@@ -120,10 +120,10 @@ function processSignal(message,conn) {
         let messageType = message.messageT
         if (messageType == "channel") {
             _processMessageChannel(message,conn)
-            _chStore(payload)
+            _chStore(message)
           }
         if (messageType == "P2P") {
-            _p2pStore(payload)
+            _p2pStore(message)
             _processMessageUser(message,conn)
           }
         else
