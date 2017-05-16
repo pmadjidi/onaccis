@@ -89,7 +89,7 @@ function processSignal(message,conn) {
       function _processMessageChannel(message,conn) {
         CLIENTS.forEach(cl=>{
               let payload = {type: "message",payload: message}
-              send(payload,conn)
+              send(payload,cl)
               console.log("Sendigng processMessage: ",payload)
           })
         }
