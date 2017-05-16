@@ -127,11 +127,11 @@ function processSignal(message,conn) {
       }
 
       function p2pstore(payload) {
-        p2pDb.p2p.insert(payload);
+         p2pDb.collection("p2p").insert(payload)
       }
 
       function chstore(payload) {
-        chDb.channel.insert(payload);
+        p2pDb.collection("channel").insert(payload)
       }
 
 
