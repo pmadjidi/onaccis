@@ -118,12 +118,14 @@ function processSignal(message,conn) {
         let time = new Date().getTime()
         message.time = time
         let messageType = message.messageT
-        if (messageType == "channel")
+        if (messageType == "channel") {
             _processMessageChannel(message,conn)
             _chStore(payload)
-        if (messageType == "P2P")
+          }
+        if (messageType == "P2P") {
             _p2pStore(payload)
             _processMessageUser(message,conn)
+          }
         else
           console.log("Error processMessage, Unkown message type: ", messageType);
       }
