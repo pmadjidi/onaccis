@@ -1,7 +1,27 @@
 "use strict"
 
+
+let p2pUrl = "mongodb://localhost:27017/p2p"
+let chUrl = "mongodb://localhost:27017/channel"
+
+let p2pDb = null
+let chDb = null
+
+
+MongoClient.connect(p2pUrl)
+  .then(db=>{console.log("Connected to database p2p messages"); p2pDb = db})
+  .catch(err=>console.log("Error Connecting to database " + p2pUrl + err))
+
+MongoClient.connect(chUrl)
+    .then(db=>{console.log("Connected to database channel messages"); chDb = db})
+    .catch(err=>console.log("Error Connecting to database " + chUrl + err))
+
+
+
 let CLIENTS = []
 let CINDEX = -1
+
+
 
 function incIndex() {
   return ++CINDEX
@@ -105,6 +125,15 @@ function processSignal(message,conn) {
         else
           console.log("Error processMessage, Unkown message type: ", messageType);
       }
+
+      function p2pstore(payload) {
+        p2pDb.p2p.insert(payload);
+      }
+
+      function chstore(payload) {
+        chDb.channel.insert(payload);
+      }
+
 
     module.exports = {
       processSignal,
