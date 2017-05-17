@@ -89,22 +89,22 @@ function routeMessage(message,conn) {
   if (conn.auth) {
   switch (m.type){
       case "signal":
-      return online.processSignal(m.payload,conn)
+      online.processSignal(m.payload,conn)
       break
       case "online":
-      return online.processOnline(m.payload,conn)
+      online.processOnline(m.payload,conn)
       break
       case "channels":
-      return channels.getUserChannels(m.payload,conn)
+      channels.getUserChannels(m.payload,conn)
       break
       case "whoAmI":
-      return processWhoAmI(m.payload,conn)
+      processWhoAmI(m.payload,conn)
       break
       case "message":
-      return online.processMessage(m.payload,conn)
+      online.processMessage(m.payload,conn)
       break
       case "replay":
-      return online.processMessage(m.payload,conn)
+      online.processMessage(m.payload,conn)
       break
       default:
         console.log("Undefined message type: ", m)
