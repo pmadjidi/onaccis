@@ -95,6 +95,18 @@ function processSignal(message,conn) {
       })
     }
 
+    function _processTypingUser(message,conn) {
+      console.log("_processMessage", message);
+      CLIENTS.forEach(conn=>{
+          if (conn.username === message.targetUser) {
+            let payload = {type: "message",payload: message}
+            // console.log(cl.username,payload);
+          send(payload,conn)
+          }
+        })
+      }
+
+
     function send(payload,conn) {
       let payloadString = JSON.stringify(payload)
       try {
@@ -114,21 +126,39 @@ function processSignal(message,conn) {
           })
         }
 
+
+      function _processTypingChannel(message,conn) {
+        _processMessageChannel(message,conn)
+      }
+
       function processMessage(message,conn) {
         let time = new Date().getTime()
         message.time = time
         let messageType = message.type
+
+
         if (messageType === "channel") {
             _processMessageChannel(message,conn)
             _chStore(message)
           }
         else if (messageType === "P2P") {
+          _processMessageUser(message,conn)
             _p2pStore(message)
-            _replay(message,conn)
           }
-        else if (messageType === "replay") {
-              _reply(message.payload,conn)
+        else if (messageType === "replayCH") {
+                _playbackChannel(message,conn)
+            //  _reply(message.payload,conn)
           }
+        else if (messageType === "typingUser") {
+                  _processTypingUser(message,conn)
+            }
+            else if (messageType === "typingChannel") {
+                      _processTypingChannel(message,conn)
+                }
+                else if (messageType === "replayP2P") {
+                          _playbackP2P(message,conn)
+                    }
+
 
         else {
           console.log("Error processMessage, Unkown message type: ", message);
@@ -143,34 +173,42 @@ function processSignal(message,conn) {
         chDb.collection("channel").insert(payload)
       }
 
-      function _replay(message,conn) {
-        switch (message.type) {
-          case "P2P":
-          _playbackP2p(message.conn)
-          break
-          case "channel":
-          _playbackChannel(message,conn)
-          break
-          default:
-            console.log("_replay, unkown message type",message.type);
-        }
-      }
 
       // {}
-      function _playbackP2p(message,conn) {
+      function _playbackP2P(message,conn) {
         console.log("GotPlayback p2p",message);
-         p2pDb.collection("p2p").find({$or: [{sourceUser: message.userName},{targetUser: message.userName}]})
-         .then(userArray=>{
-           let timeStamp = new Date().getTime()
-           userArray.forEach(user=>{
-             let payload = {messageT: user.messageT,sourceUser: user.sourceUser,targetUser: user.targetUser,content: user.content,time: user.time}
-             payload.replay = timeStamp
-             send(payload,conn)
-             console.log(payload);
-           })
-         })
-      }
+         p2pDb.collection("p2p").find({$or: [{sourceUser: message.userName},{targetUser: message.userName}]},
+           function(err, messageArray) {
+   if (messageArray) {
+     let timeStamp = new Date().getTime()
+     messageArray.forEach(m=>{
+       let payload = {type: m.type,sourceUser: m.sourceUser,targetUser: m.targetUser,content: m.content,time: m.time}
+       payload.replay = timeStamp
 
+       send({type: "message",payload: payload},conn)
+       console.log(payload);
+     })
+   }
+})
+}
+
+
+function _playbackChannel(message,conn) {
+  console.log("GotPlayback Channel",message);
+   chDb.collection("channel").find({targetChannel: message.channelName},
+     function(err, messageArray) {
+if (messageArray) {
+let timeStamp = new Date().getTime()
+messageArray.forEach(m=>{
+ let payload = {type: m.type,sourceUser: m.sourceUser,targetChannel: m.targetChannel,content: m.content,time: m.time}
+ payload.replay = timeStamp
+
+ send({type: "message",payload: payload},conn)
+ console.log(payload);
+})
+}
+})
+}
 
     module.exports = {
       processSignal,

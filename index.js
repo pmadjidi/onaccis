@@ -103,9 +103,6 @@ function routeMessage(message,conn) {
       case "message":
       online.processMessage(m.payload,conn)
       break
-      case "replay":
-      online.processMessage(m.payload,conn)
-      break
       default:
         console.log("Undefined message type: ", m)
   }
