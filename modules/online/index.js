@@ -124,8 +124,12 @@ function processSignal(message,conn) {
           }
         if (messageType == "P2P") {
             _p2pStore(message)
-            _processMessageUser(message,conn)
+            _replay(message,conn)
           }
+          if (messageType == "replay") {
+              _processMessageUser(message,conn)
+            }
+
         else
           console.log("Error processMessage, Unkown message type: ", messageType);
       }
@@ -136,6 +140,32 @@ function processSignal(message,conn) {
 
       function _chStore(payload) {
         chDb.collection("channel").insert(payload)
+      }
+
+      function _replay(message,conn) {
+        switch (message.type) {
+          case "P2P":
+          _playbackP2p(message.conn)
+          break
+          case "channel":
+          _playbackChannel(message,conn)
+          break
+          default:
+            console.log("_replay, unkown message type",message.type);
+        }
+      }
+
+      // {}
+      function _playbackP2p(message,conn) {
+         p2pDb.collection("p2p").find({$or: [{sourceUser: message.username},{targetUser: message.username}]})
+         .then(userArray=>{
+           let timeStamp = new Date().getTime()
+           userArray.forEach(user=>{
+             let payload = {messageT: user.messageT,sourceUser: user.sourceUser,targetUser: user.targetUser,content: user.content,time: user.time}
+             payload.replay = timeStamp
+             send(payload,conn)
+           })
+         })
       }
 
 
