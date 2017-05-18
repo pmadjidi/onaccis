@@ -32,8 +32,8 @@ MongoClient.connect(sessionUrl)
 
 
 
-function findUser(username){
-  return userDb.collection("users").findOne({username: username})
+function findUser(conn){
+  return userDb.collection("users").findOne({username: conn.username})
 }
 
 function createUser(username,password){
@@ -77,26 +77,27 @@ function process(message,conn,broadFunc){
   console.log(1)
   console.log(new Date() + "Processing login....",JSON.stringify(message,null,4))
   conn.username = message.username
-  return findUser(conn.username)
+  conn.team = message.team
+  return findUser(conn)
   .then(user=>{
     if (!user)
       throw "NotFound"
-    console.log("Found user:" + conn.username)
+    console.log("Found user:" + conn.username,"@ Team: ",conn.team)
     return user
   })
   .then(user=>verifyUser(user,message.password))
   .then(status=>{
     if (status) {
-      console.log("Auth accepted user " + conn.username)
+      console.log("Auth accepted user " + conn.username,"@ Team: ",conn.team)
       createSession(conn)
       broadFunc()
-      return conn.client.send(JSON.stringify({auth: "true",user: conn.username,
-       session: conn.session}))
+      return conn.client.send(JSON.stringify({type: "auth",auth: "true",user: conn.username,
+       session: conn.session,team: conn.team}))
     }
     else {
       console.log("Auth denied user " + message.username)
       conn.auth  = false
-    return conn.client.send(JSON.stringify({auth: conn.auth, user: message.username}))
+    return conn.client.send(JSON.stringify({type: "auth",auth: conn.auth, user: message.username,team: conn.team}))
   }
   })
   .catch(err=>{
@@ -106,8 +107,8 @@ function process(message,conn,broadFunc){
      console.log("User created: ",inserted);
      createSession(conn)
      broadFunc()
-     conn.client.send(JSON.stringify({auth: conn.auth, user: conn.username,
-    session: conn.session}))
+     conn.client.send(JSON.stringify({type: "auth",auth: conn.auth, user: conn.username,
+    session: conn.session,team: conn.team}))
  })
  }
  else {

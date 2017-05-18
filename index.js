@@ -50,7 +50,8 @@ wss.on('connection', client => {
   conn.client = client
   conn.auth = false
   conn.index = online.incIndex()
-  console.log((new Date()) + " A new WebSocket client was connected.");
+  conn.username = "Uknown, not logged in..."
+  console.log((new Date()) + " A new WebSocket client was connected: ",conn.index);
   printConn(conn)
   online.addConn(conn)
 
@@ -110,10 +111,10 @@ function routeMessage(message,conn) {
 else {
   if (m.type !== "login" ) {
     console.log("unauthenticated, redirecting to login.....", conn.username);
-    return conn.client.send(JSON.stringify({auth: "false", user: conn.username}))
+    return conn.client.send(JSON.stringify({type: "auth",auth: "false", user: conn.username}))
   }
 
-  console.log("Processing login.....", conn.username);
+  console.log("Processing login.....",m.payload)
   return login.process(m.payload,conn,online.boradcastLogin)
 }
 }
@@ -122,6 +123,6 @@ else {
 
 function processWhoAmI(message,conn) {
   conn.client.send(JSON.stringify({type: "whoAmIAns",
-    payload: {session: conn.session,username: conn.username}
+    payload: {session: conn.session,username: conn.username,team: conn.team}
   }))
 }
