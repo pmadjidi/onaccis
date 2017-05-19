@@ -3,9 +3,10 @@
 const MongoClient = require('mongodb').MongoClient;
 let p2pUrl = "mongodb://localhost:27017/p2p"
 let chUrl = "mongodb://localhost:27017/channel"
-
+let sessUrl = "mongodb://localhost:27017/session"
 let p2pDb = null
 let chDb = null
+let sessDb = null
 
 
 MongoClient.connect(p2pUrl)
@@ -15,6 +16,10 @@ MongoClient.connect(p2pUrl)
 MongoClient.connect(chUrl)
     .then(db=>{console.log("Connected to database channel messages"); chDb = db})
     .catch(err=>console.log("Error Connecting to database " + chUrl + err))
+
+MongoClient.connect(sessUrl)
+        .then(db=>{console.log("Connected to database session..."); sessDb = db})
+        .catch(err=>console.log("Error Connecting to database  " + sessUrl + err))
 
 
 
@@ -42,8 +47,9 @@ function rmConn(conn) {
 function onlineList(username) {
   if (username)  {
   let unique = []
-  let users =   CLIENTS.map(conn=> {
-    if(conn.username !== username || conn.username === undefined)
+  let users =   CLIENTS.filter(conn=>conn.state !== "closed")
+  .map(conn=> {
+    if((conn.username !== username || conn.username === null) && conn.state !== "closed" )
       return conn.username
   }).filter(name => name !== undefined)
   for (let i = 0; i < users.length; i++) {
@@ -55,6 +61,9 @@ function onlineList(username) {
   return []
 }
 
+
+
+
 function processOnline(message,conn) {
   let oList = onlineList(conn.username)
   console.log(oList)
@@ -63,7 +72,8 @@ function processOnline(message,conn) {
 }
 
 function boradcastLogin() {
-  CLIENTS.forEach(conn=>{
+  CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined)
+  .forEach(conn=>{
       let oList = onlineList(conn.username)
       console.log("In BroadcastLogin");
       console.log(conn.username,oList)

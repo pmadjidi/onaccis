@@ -50,7 +50,7 @@ wss.on('connection', client => {
   conn.client = client
   conn.auth = false
   conn.index = online.incIndex()
-  conn.username = "Uknown, not logged in..."
+  conn.username = null
   console.log((new Date()) + " A new WebSocket client was connected: ",conn.index);
   printConn(conn)
   online.addConn(conn)
@@ -63,7 +63,9 @@ wss.on('connection', client => {
 
   client.on('close', function(reasonCode, description) {
       console.log(new Date() + "Client disconnect " + conn.ip + conn.port + " reason: " + reasonCode + " description: " + description)
-      online.rmConn(conn)
+      conn.state = "closed"
+      online.boradcastLogin()
+      //online.rmConn(conn)
     });
 
     client.on('error', function(error) {
@@ -86,8 +88,9 @@ function printConn(conn){
 
 function routeMessage(message,conn) {
   let m = JSON.parse(message)
+  let session = m.payload.session
 
-  if (conn.auth) {
+  if (conn.auth || session) {
   switch (m.type){
       case "signal":
       online.processSignal(m.payload,conn)
@@ -103,6 +106,9 @@ function routeMessage(message,conn) {
       break
       case "message":
       online.processMessage(m.payload,conn)
+      break
+      case "session":
+      console.log(m.payload)
       break
       default:
         console.log("Undefined message type: ", m)

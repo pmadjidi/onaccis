@@ -1,34 +1,16 @@
 "use strict"
-
-const crypto = require('crypto');
 const MongoClient = require('mongodb').MongoClient;
+const crypto = require('crypto');
+
 let userUrl = "mongodb://localhost:27017/users"
-let sessionUrl = "mongodb://localhost:27017/sessions"
+const sess = require('../sessions/')
 
-
-
-function checkAuth(message,conn) {
-  if (message.type === "login")
-    return true
-  let now = new Date().getTime()
-
-  if (conn.valid) {
-    return now <= conn.valid
-  }
-  else
-    return false
-}
 
 let userDb = null
-let sessionDb = null
+
 MongoClient.connect(userUrl)
   .then(db=>{console.log("Connected to database users"); userDb = db})
   .catch(err=>console.log("Error Connecting to database " + userUrl + err))
-
-MongoClient.connect(sessionUrl)
-    .then(db=>{console.log("Connected to database sessions"); sessionDb = db})
-    .catch(err=>console.log("Error Connecting to database " + sessionUrl + err))
-
 
 
 
@@ -49,11 +31,7 @@ function createUser(username,password){
   return userDb.collection("users").insert(arg)
 }
 
-function createSession(conn) {
-  conn.auth = true
-  conn.session = crypto.randomBytes(64).toString('hex')
-  conn.valid =  new Date().getTime() + 24 * 60 * 60 * 1000
-}
+
 
 function verifyUser(user,suggestedPassword){
   let hash = sha512(suggestedPassword,user.salt)
@@ -89,7 +67,7 @@ function process(message,conn,broadFunc){
   .then(status=>{
     if (status) {
       console.log("Auth accepted user " + conn.username,"@ Team: ",conn.team)
-      createSession(conn)
+      sess.createSession(conn)
       broadFunc()
       return conn.client.send(JSON.stringify({type: "auth",auth: "true",user: conn.username,
        session: conn.session,team: conn.team}))
@@ -105,7 +83,7 @@ function process(message,conn,broadFunc){
   createUser(message.username,message.password)
    .then(inserted=>{
      console.log("User created: ",inserted);
-     createSession(conn)
+     sess.createSession(conn)
      broadFunc()
      conn.client.send(JSON.stringify({type: "auth",auth: conn.auth, user: conn.username,
     session: conn.session,team: conn.team}))
@@ -119,6 +97,5 @@ function process(message,conn,broadFunc){
 
 
 module.exports = {
-  process,
-  checkAuth
+  process
 }
