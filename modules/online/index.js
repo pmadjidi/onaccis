@@ -86,7 +86,8 @@ function boradcastLogin() {
 
 
 function processSignal(message,conn) {
-  CLIENTS.forEach(conn=>{
+  CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined)
+    .forEach(conn=>{
       if (conn.username === message.targetUser) {
         let payload = {type: "signal",payload: message}
         send(payload,conn)
@@ -96,7 +97,8 @@ function processSignal(message,conn) {
 
   function _processMessageUser(message,conn) {
     console.log("_processMessage", message);
-    CLIENTS.forEach(conn=>{
+    CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined)
+      .forEach(conn=>{
         if (conn.username === message.targetUser || conn.username === message.sourceUser ) {
           let payload = {type: "message",payload: message}
           // console.log(cl.username,payload);
@@ -107,7 +109,8 @@ function processSignal(message,conn) {
 
     function _processTypingUser(message,conn) {
       console.log("_processMessage", message);
-      CLIENTS.forEach(conn=>{
+      CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined)
+        .forEach(conn=>{
           if (conn.username === message.targetUser) {
             let payload = {type: "message",payload: message}
             // console.log(cl.username,payload);
@@ -129,7 +132,8 @@ function processSignal(message,conn) {
     }
 
       function _processMessageChannel(message,conn) {
-        CLIENTS.forEach(cl=>{
+        CLIENTS.filter(conn=>conn.state !== "closed")
+        .forEach(cl=>{
               let payload = {type: "message",payload: message}
               send(payload,cl)
               console.log("Sendigng processMessage: ",payload)
