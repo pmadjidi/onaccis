@@ -72,7 +72,7 @@ function processOnline(message,conn) {
 }
 
 function boradcastLogin() {
-  CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined)
+  CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined || conn === null)
   .forEach(conn=>{
       let oList = onlineList(conn.username)
       console.log("In BroadcastLogin");
@@ -86,7 +86,7 @@ function boradcastLogin() {
 
 
 function processSignal(message,conn) {
-  CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined)
+  CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined || conn === null)
     .forEach(conn=>{
       if (conn.username === message.targetUser) {
         let payload = {type: "signal",payload: message}
@@ -97,7 +97,7 @@ function processSignal(message,conn) {
 
   function _processMessageUser(message,conn) {
     console.log("_processMessage", message);
-    CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined)
+    CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined || conn == null)
       .forEach(conn=>{
         if (conn.username === message.targetUser || conn.username === message.sourceUser ) {
           let payload = {type: "message",payload: message}
