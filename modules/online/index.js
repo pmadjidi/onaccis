@@ -1,5 +1,5 @@
 "use strict"
-
+const crypto = require('crypto');
 const MongoClient = require('mongodb').MongoClient;
 let p2pUrl = "mongodb://localhost:27017/p2p"
 let chUrl = "mongodb://localhost:27017/channel"
@@ -141,6 +141,14 @@ function processSignal(message,conn) {
         }
 
 
+      function _addMessageId(message){
+        message.id = crypto.createHash('sha1').update(message.content).digest('hex')
+      }
+
+        function _addNotifyArray(message) {
+          message.notifyed = new Array()
+        }
+
       function _processTypingChannel(message,conn) {
         _processMessageChannel(message,conn)
       }
@@ -152,10 +160,13 @@ function processSignal(message,conn) {
 
 
         if (messageType === "channel") {
+            _addMessageId(message)
+            _addNotifyArray(message)
             _processMessageChannel(message,conn)
             _chStore(message)
           }
         else if (messageType === "P2P") {
+          _addMessageId(message)
           _processMessageUser(message,conn)
             _p2pStore(message)
           }
@@ -214,7 +225,7 @@ function _playbackChannel(message,conn) {
 if (messageArray) {
 let timeStamp = new Date().getTime()
 messageArray.forEach(m=>{
- let payload = {type: m.type,sourceUser: m.sourceUser,targetChannel: m.targetChannel,content: m.content,time: m.time}
+ let payload = {type: m.type,sourceUser: m.sourceUser,targetChannel: m.targetChannel,content: m.content,time: m.time,id: m.id}
  payload.replay = timeStamp
 
  send({type: "message",payload: payload},conn)
@@ -223,6 +234,7 @@ messageArray.forEach(m=>{
 }
 })
 }
+
 
     module.exports = {
       processSignal,

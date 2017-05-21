@@ -57,7 +57,7 @@ wss.on('connection', client => {
 
 
   client.on('message', function (message) {
-  console.log(new Date() + "Got message: " + conn.ip + conn.port + " " + message)
+  //console.log(new Date() + "Got message: " + conn.ip + conn.port + " " + message)
   return routeMessage(message,conn)
   });
 
@@ -88,6 +88,7 @@ function printConn(conn){
 
 function routeMessage(message,conn) {
   let m = JSON.parse(message)
+  console.log(JSON.stringify(m,null,4))
   let session = m.payload.session
 
   if (conn.auth || session) {
@@ -110,6 +111,9 @@ function routeMessage(message,conn) {
       case "session":
       console.log(m.payload)
       break
+      case "seen":
+      channels.channelNotifyedMessage(m.payload,conn)
+      break
       default:
         console.log("Undefined message type: ", m)
   }
@@ -120,7 +124,7 @@ else {
     return conn.client.send(JSON.stringify({type: "auth",auth: "false", user: conn.username}))
   }
 
-  console.log("Processing login.....",m.payload)
+  console.log("Processing login.....",JSON.stringify(m.payload,null,4))
   return login.process(m.payload,conn,online.boradcastLogin)
 }
 }

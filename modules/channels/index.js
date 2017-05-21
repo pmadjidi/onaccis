@@ -39,11 +39,27 @@ function getUserChannels(channelName,conn) {
 }
 
 
+function channelNotifyedMessage(message,conn) {
+  console.log(message.id)
+  channelsDb.collection("channel").updateOne({
+            id: message.id
+        }, {
+            $push: {
+              notifyed: message.sourceUser
+            }
+        },
+        { upsert: true }
+        , function(err, results) {
+            console.log(err);
+            console.log(results.result);
+        })
+    }
 
 
     module.exports = {
     findChannelName,
     findChannelTeam,
     createChannel,
-    getUserChannels
+    getUserChannels,
+    channelNotifyedMessage
     }
