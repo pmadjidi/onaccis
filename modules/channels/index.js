@@ -33,7 +33,7 @@ function createChannel(channelName,conn){
 
 
 function getUserChannels(channelName,conn) {
-  let channels = ["General","News","World","Bot"]
+  let channels = [{name: "General",notify: 0},{name: "News",notify: 0},{name: "World",notify:0},{name:"Bot",notify:0}]
   conn.client.send(JSON.stringify({type: "channels",data: channels}))
 
 }
