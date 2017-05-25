@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "git pull; node index.js"
+    "start": "git pull; node index.js",
+    "db": "sudo mongod &",
+    "cdb": "sudo mongod &;sudo mongo clean.js",
+    "cstart": "sudo mongo clean.js;git pull;node index.js"
   },
   "author": "",
   "license": "ISC",

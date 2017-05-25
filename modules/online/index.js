@@ -161,7 +161,6 @@ function processSignal(message,conn) {
 
         if (messageType === "channel") {
             _addMessageId(message)
-            _addNotifyArray(message)
             _processMessageChannel(message,conn)
             _chStore(message)
           }
@@ -191,6 +190,7 @@ function processSignal(message,conn) {
     }
 
       function _p2pStore(payload) {
+          _addNotifyArray(payload)
          p2pDb.collection("p2p").insert(payload)
       }
 
@@ -201,7 +201,6 @@ function processSignal(message,conn) {
 
       // {}
       function _playbackP2P(message,conn) {
-        console.log("GotPlayback p2p",message);
          p2pDb.collection("p2p").find({$or: [{sourceUser: message.userName},{targetUser: message.userName}]},
            function(err, messageArray) {
    if (messageArray) {
@@ -223,11 +222,12 @@ function _playbackChannel(message,conn) {
    chDb.collection("channel").find({targetChannel: message.channelName},
      function(err, messageArray) {
 if (messageArray) {
-let timeStamp = new Date().getTime()
+let t = new Date().getTime()
 messageArray.forEach(m=>{
- let payload = {type: m.type,sourceUser: m.sourceUser,targetChannel: m.targetChannel,content: m.content,time: m.time,id: m.id}
- payload.replay = timeStamp
-
+ let payload = {type: m.type,sourceUser: m.sourceUser,targetChannel: m.targetChannel,content: m.content,time: m.time,id: m.id,replay: t}
+ if (m.notifyed && m.notifyed.indexOf(conn.username) > -1) {
+    payload.notifyed =  "X"
+  }
  send({type: "message",payload: payload},conn)
  console.log(payload);
 })
