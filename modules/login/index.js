@@ -2,33 +2,35 @@
 const MongoClient = require('mongodb').MongoClient;
 const crypto = require('crypto');
 
+/*
 let userUrl = "mongodb://localhost:27017/users"
+*/
+
 const sess = require('../sessions/')
-
-
-let userDb = null
-
-MongoClient.connect(userUrl)
-  .then(db=>{console.log("Connected to database users"); userDb = db})
-  .catch(err=>console.log("Error Connecting to database " + userUrl + err))
+const db = require('../db/')
+let userUrl = db.db2Url("users")
 
 
 
 function findUser(conn){
-  return userDb.collection("users").findOne({username: conn.username})
+  let aUser = db.getOneData({username: conn.username,team: conn.team},userUrl,"users")
+  console.log(aUser)
+  return aUser
+  //return userDb.collection("users").findOne({username: conn.username,team: conn.team})
 }
 
-function createUser(username,password){
+function createUser(username,team,password){
   let salt = crypto.randomBytes(128).toString('hex')
   let result = sha512(password,salt)
   console.log("Creating user......",username)
   let arg = {
     username: username,
+    team: team,
     hash:  result.hash,
     salt: result.salt,
     time: new Date().getTime()
   }
-  return userDb.collection("users").insert(arg)
+  return db.saveData(arg,userUrl,"users")
 }
 
 
@@ -52,8 +54,8 @@ function sha512(password, salt){
 };
 
 function process(message,conn,broadFunc){
-  console.log(1)
-  console.log(new Date() + "Processing login....",JSON.stringify(message,null,4))
+
+//  console.log(new Date() + "Processing login....",JSON.stringify(message,null,4))
   conn.username = message.username
   conn.team = message.team
   return findUser(conn)
@@ -80,7 +82,7 @@ function process(message,conn,broadFunc){
   })
   .catch(err=>{
   if (err === "NotFound") {
-  createUser(message.username,message.password)
+  createUser(message.username,message.team,message.password)
    .then(inserted=>{
      console.log("User created: ",inserted);
      sess.createSession(conn)
