@@ -68,11 +68,14 @@ function processOnline(message,conn) {
 function boradcastLogin() {
   CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined || conn === null)
   .forEach(conn=>{
-      let oList = onlineList(conn.username)
-      console.log("In BroadcastLogin");
-      console.log(conn.username,oList)
-      let payload = {type: "online",data: oList}
-      send(payload,conn)
+      onlineList(conn)
+      .then(oList=>{
+        console.log("In BroadcastLogin");
+        console.log(conn.username,oList)
+        let payload = {type: "online",data: oList}
+        send(payload,conn)
+      })
+
 })
 }
 
