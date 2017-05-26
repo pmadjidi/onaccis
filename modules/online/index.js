@@ -33,17 +33,17 @@ function getOnLineUsers(conn) {
   .filter(CONN=>CONN.state !== "closed")
   .filter(CONN=>CONN.username !== null)
   .filter(CONN=>CONN.username !== undefined)
-  .filter(CONN=>CONN.username !== conn.username)
   .map(CONN=>CONN.username)
 }
 
 function onlineList(conn) {
   if (conn.username) {
   let userList = getOnLineUsers(conn)
-  console.log("TTTTTTTT",userList)
   return USERS.getAllUsers()
   .then(userArray=>{
     return userArray.map(aUser=>{
+      if (aUser.username === conn.username)
+        return 
       if (userList.indexOf(aUser.username) > -1)
         return {name: aUser.username, status: "online"}
       else {
