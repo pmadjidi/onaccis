@@ -39,11 +39,12 @@ function getOnLineUsers(conn) {
 function onlineList(conn) {
   if (conn.username) {
   let userList = getOnLineUsers(conn)
-  return USERS.getAllUsers()
+//  return USERS.getAllUsers()
+  return USERS.getUsersInTeam(conn.team)
   .then(userArray=>{
     return userArray.map(aUser=>{
       if (aUser.username === conn.username)
-        return 
+        return
       if (userList.indexOf(aUser.username) > -1)
         return {name: aUser.username, status: "online"}
       else {

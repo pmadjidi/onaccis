@@ -1,6 +1,5 @@
 "use strict"
 var Promise = require("bluebird");
-const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert')
 const db = require('../db/')
 let channelUrl = db.db2Url("channel")
@@ -11,13 +10,21 @@ function findChannelName(channelName,team){
   return db.getOneData({name: channelName,team: team},channelUrl,"channel")
 }
 
+function findChannelsTeam(aTeam) {
+  return db.getData({team: aTeam},channelUrl,"channel")
+}
 
-function createChannel(ch){
-  return findChannelName(ch.name,ch.team)
+
+function createChannel(name,team,owner){
+  return findChannelName(name,team)
   .then(ach=>{
     if (!ach) {
         let date = new Date().getTime()
+        let ch = {}
         ch.date = date
+        ch.name = name
+        ch.team = team
+        ch.owner = owner
         return db.saveData(ch,channelUrl,"channel")
   }
   else {
@@ -26,19 +33,29 @@ function createChannel(ch){
 })
 }
 
+function init(team) {
+  let channels = [{name: "General"},
+                  {name: "News"},
+                  {name: "World"},
+                  {name: "Onacci"}]
+
+  channels.map(aChannel=>createChannel(aChannel.name,team,"system"))
+}
 
 function getUserChannels(channelName,conn) {
-  let channels = [{name: "General",notify: 0},{name: "News",notify: 0},{name: "World",notify:0},{name:"Bot",notify:0}]
-  conn.client.send(JSON.stringify({type: "channels",data: channels}))
-  countNotifications(channels,conn)
-  .then(array=>console.log("DDDDDD",array))
+  //let channels = [{name: "General",notify: 0},{name: "News",notify: 0},{name: "World",notify:0},{name:"Onacci",notify:0}]
+//  conn.client.send(JSON.stringify({type: "channels",data: channels}))
+  findChannelsTeam(conn.team)
+  .then(channels=>{console.log("YYYYYY",channels);return countNotifications(channels,conn)})
+  .then(array=>conn.client.send(JSON.stringify({type: "channels",data: array})))
 }
 
 
 function countNotifications(channelArray,conn) {
   return Promise.all(channelArray.map(aChannel=>{
-    return db.getData({"targetChannel": aChannel.name},channelUrl,"channel")
+    return db.getData({"targetChannel": aChannel.name,team: conn.team},channelUrl,"channel")
     .then(array=>{
+      console.log("UUUUUU",array);
       if (array)
         return {name: aChannel.name,notify: array.length}
       return {name: aChannel.name,notify: 0}
@@ -63,5 +80,7 @@ function channelNotifyedMessage(message,conn) {
     findChannelName,
     createChannel,
     getUserChannels,
-    channelNotifyedMessage
+    channelNotifyedMessage,
+    init,
+    findChannelsTeam
     }

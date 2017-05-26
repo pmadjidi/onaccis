@@ -8,6 +8,7 @@ let userUrl = "mongodb://localhost:27017/users"
 
 const sess = require('../sessions/')
 const db = require('../db/')
+const ch = require('../channels/')
 let userUrl = db.db2Url("users")
 
 
@@ -15,6 +16,11 @@ let userUrl = db.db2Url("users")
 function findUser(conn){
   let aUser = db.getOneData({username: conn.username,team: conn.team},userUrl,"users")
   return aUser
+}
+
+function findTeam(conn) {
+  let aTeam = db.getOneData({team: conn.team},userUrl,"users")
+  return aTeam
 }
 
 function createUser(username,team,password){
@@ -53,10 +59,18 @@ function sha512(password, salt){
 
 function process(message,conn,broadFunc){
 
-//  console.log(new Date() + "Processing login....",JSON.stringify(message,null,4))
   conn.username = message.username
   conn.team = message.team
-  return findUser(conn)
+  let initTeam = false
+  return findTeam(conn)
+  .then(team=>{
+    if(!team) {
+      initTeam = true
+      throw "NotFound"
+    }
+    return initTeam
+  })
+  .then(firstTime=>findUser(conn))
   .then(user=>{
     if (!user)
       throw "NotFound"
@@ -82,6 +96,7 @@ function process(message,conn,broadFunc){
   if (err === "NotFound") {
   createUser(message.username,message.team,message.password)
    .then(inserted=>{
+     ch.init(message.team)
      console.log("User created: ",inserted);
      sess.createSession(conn)
      broadFunc()
