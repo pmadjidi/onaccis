@@ -5,12 +5,17 @@ let userUrl = db.db2Url("users")
 
 
 
-function getUsersInTeam(channelName,team){
-  return db.getOneData({team: team},userUrl,"users")
+function getUsersInTeam(team){
+  return db.getData({team: team},userUrl,"users")
+}
+
+function getAllUsers(){
+  return db.getData({},userUrl,"users")
 }
 
 
 
 module.exports = {
-getUsersInTeam
+getUsersInTeam,
+getAllUsers
 }

@@ -1,6 +1,7 @@
 "use strict"
 const crypto = require('crypto');
 const db = require('../db/')
+const USERS = require('../users/')
 let sessUrl = db.db2Url("session")
 let chUrl = db.db2Url("channel")
 let p2pUrl = db.db2Url("p2p")
@@ -27,32 +28,42 @@ function rmConn(conn) {
   }
 }
 
-function onlineList(username) {
-  if (username)  {
-  let unique = []
-  let users =   CLIENTS.filter(conn=>conn.state !== "closed")
-  .map(conn=> {
-    if((conn.username !== username || conn.username === null) && conn.state !== "closed" )
-      return conn.username
-  }).filter(name => name !== undefined)
-  for (let i = 0; i < users.length; i++) {
-      let current = users[i];
-      if (unique.indexOf(current) < 0) unique.push(current);
-  }
-  return unique
-}
-  return []
+function getOnLineUsers(conn) {
+  return CLIENTS
+  .filter(CONN=>CONN.state !== "closed")
+  .filter(CONN=>CONN.username !== null)
+  .filter(CONN=>CONN.username !== undefined)
+  .filter(CONN=>CONN.username !== conn.username)
+  .map(CONN=>CONN.username)
 }
 
-
+function onlineList(conn) {
+  if (conn.username) {
+  let userList = getOnLineUsers(conn)
+  console.log("TTTTTTTT",userList)
+  return USERS.getAllUsers()
+  .then(userArray=>{
+    return userArray.map(aUser=>{
+      if (userList.indexOf(aUser.username) > -1)
+        return {name: aUser.username, status: "online"}
+      else {
+        return {name: aUser.username,status: "offline"}
+      }
+  })
+})
+}
+  return Promise.resolve([])
+}
 
 
 function processOnline(message,conn) {
-  let oList = onlineList(conn.username)
-  console.log(oList)
-  let payload = {type: "online",data: oList}
+  onlineList(conn)
+  .then(userList=> {
+  console.log(userList)
+  let payload = {type: "online",data: userList}
   send(payload,conn)
-}
+}) }
+
 
 function boradcastLogin() {
   CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined || conn === null)
