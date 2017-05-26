@@ -1,26 +1,9 @@
 "use strict"
 const crypto = require('crypto');
-const MongoClient = require('mongodb').MongoClient;
-let p2pUrl = "mongodb://localhost:27017/p2p"
-let chUrl = "mongodb://localhost:27017/channel"
-let sessUrl = "mongodb://localhost:27017/session"
-let p2pDb = null
-let chDb = null
-let sessDb = null
-
-
-MongoClient.connect(p2pUrl)
-  .then(db=>{console.log("Connected to database p2p messages"); p2pDb = db})
-  .catch(err=>console.log("Error Connecting to database " + p2pUrl + err))
-
-MongoClient.connect(chUrl)
-    .then(db=>{console.log("Connected to database channel messages"); chDb = db})
-    .catch(err=>console.log("Error Connecting to database " + chUrl + err))
-
-MongoClient.connect(sessUrl)
-        .then(db=>{console.log("Connected to database session..."); sessDb = db})
-        .catch(err=>console.log("Error Connecting to database  " + sessUrl + err))
-
+const db = require('../db/')
+let sessUrl = db.db2Url("session")
+let chUrl = db.db2Url("channel")
+let p2pUrl = db.db2Url("p2p")
 
 
 let CLIENTS = []
@@ -191,49 +174,51 @@ function processSignal(message,conn) {
 
       function _p2pStore(payload) {
           _addNotifyArray(payload)
-         p2pDb.collection("p2p").insert(payload)
+          db.saveData(payload,p2pUrl,"p2p")
       }
 
       function _chStore(payload) {
-        chDb.collection("channel").insert(payload)
+          db.saveData(payload,chUrl,"channel")
       }
 
 
-      // {}
-      function _playbackP2P(message,conn) {
-         p2pDb.collection("p2p").find({$or: [{sourceUser: message.userName},{targetUser: message.userName}]},
-           function(err, messageArray) {
-   if (messageArray) {
-     let timeStamp = new Date().getTime()
-     messageArray.forEach(m=>{
+function _playbackP2P(message,conn) {
+  console.log("GotPlayback P2P",message);
+  let query = {$or: [{sourceUser: message.userName},{targetUser: message.userName}]}
+   db.getData(query,p2pUrl,"p2p")
+    .then(messageArray=>{
+      if (messageArray) {
+      let timeStamp = new Date().getTime()
+      messageArray.forEach(m=>{
        let payload = {type: m.type,sourceUser: m.sourceUser,targetUser: m.targetUser,content: m.content,time: m.time}
        payload.replay = timeStamp
 
        send({type: "message",payload: payload},conn)
-       console.log(payload);
-     })
-   }
-})
-}
+       console.log(payload)
+    })
+  }})}
+
 
 
 function _playbackChannel(message,conn) {
   console.log("GotPlayback Channel",message);
-   chDb.collection("channel").find({targetChannel: message.channelName},
-     function(err, messageArray) {
-if (messageArray) {
-let t = new Date().getTime()
-messageArray.forEach(m=>{
- let payload = {type: m.type,sourceUser: m.sourceUser,targetChannel: m.targetChannel,content: m.content,time: m.time,id: m.id,replay: t}
- if (m.notifyed && m.notifyed.indexOf(conn.username) > -1) {
-    payload.notifyed =  "X"
-  }
- send({type: "message",payload: payload},conn)
- console.log(payload);
-})
-}
-})
-}
+  let query = {targetChannel: message.channelName}
+   db.getData(query,chUrl,"channel")
+   .then(messageArray=>{
+     if (messageArray) {
+     let t = new Date().getTime()
+     messageArray.forEach(m=>{
+      let payload = {type: m.type,sourceUser: m.sourceUser,targetChannel: m.targetChannel,content: m.content,time: m.time,id: m.id,replay: t}
+      if (m.notifyed && m.notifyed.indexOf(conn.username) > -1) {
+         payload.notifyed =  "X"
+       }
+      send({type: "message",payload: payload},conn)
+      console.log(payload);
+   })
+ }})}
+
+
+
 
 
     module.exports = {

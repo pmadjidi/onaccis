@@ -14,9 +14,7 @@ let userUrl = db.db2Url("users")
 
 function findUser(conn){
   let aUser = db.getOneData({username: conn.username,team: conn.team},userUrl,"users")
-  console.log(aUser)
   return aUser
-  //return userDb.collection("users").findOne({username: conn.username,team: conn.team})
 }
 
 function createUser(username,team,password){

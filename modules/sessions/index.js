@@ -1,14 +1,12 @@
 "use strict"
-const MongoClient = require('mongodb').MongoClient;
-let sessionUrl = "mongodb://localhost:27017/sessions"
 const crypto = require('crypto');
 
-let sessionDb = null
+const db = require('../db/')
+let sessionUrl = db.db2Url("session")
+
 let SESSS_CACHE = {}
 
-MongoClient.connect(sessionUrl)
-    .then(db=>{console.log("Connected to database sessions"); sessionDb = db})
-    .catch(err=>console.log("Error Connecting to database " + sessionUrl + err))
+
 
 
     function createSession(conn) {
@@ -18,8 +16,7 @@ MongoClient.connect(sessionUrl)
       conn.valid =  new Date().getTime()
       let payload = {username: conn.username,session: conn.session,valid: conn.valid,team: conn.team,ip: conn.ip,port: conn.port}
       SESSS_CACHE[key] = payload
-      sessionDb.collection("sessions")
-      .insert(payload)
+      return db.saveData(payload,sessionUrl,"sessions")
     }
 
     function checkAuth(message,conn) {

@@ -6,25 +6,22 @@ const db = require('../db/')
 let channelUrl = db.db2Url("channel")
 
 
-function findChannelName(channelName){
-  return channelsDb.collection("channel").findOne({channelName})
+
+function findChannelName(channelName,team){
+  return db.getOneData({name: channelName,team: team},channelUrl,"channel")
 }
 
 
-
-function findChannelTeam(teamName,conn){
-  return channelsDb.collection("channel").find({teamName})
-}
-
-function createChannel(channelName,conn){
-  return findChannelName(channelName)
-  .then(channel=>{
-    if (!channel) {
-    //create channel
-    // return channel
+function createChannel(ch){
+  return findChannelName(ch.name,ch.team)
+  .then(ach=>{
+    if (!ach) {
+        let date = new Date().getTime()
+        ch.date = date
+        return db.saveData(ch,channelUrl,"channel")
   }
   else {
-
+    return "CHEXISTS"
   }
 })
 }
@@ -64,7 +61,6 @@ function channelNotifyedMessage(message,conn) {
 
     module.exports = {
     findChannelName,
-    findChannelTeam,
     createChannel,
     getUserChannels,
     channelNotifyedMessage
