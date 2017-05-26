@@ -3,15 +3,16 @@ var Promise = require("bluebird");
 const assert = require('assert')
 const db = require('../db/')
 let channelUrl = db.db2Url("channel")
+let chMetaUrl = db.db2Url("chmeta")
 
 
 
 function findChannelName(channelName,team){
-  return db.getOneData({name: channelName,team: team},channelUrl,"channel")
+  return db.getOneData({name: channelName,team: team},chMetaUrl,"chmeta")
 }
 
 function findChannelsTeam(aTeam) {
-  return db.getData({team: aTeam},channelUrl,"channel")
+  return db.getData({team: aTeam},chMetaUrl,"chmeta")
 }
 
 
@@ -25,7 +26,7 @@ function createChannel(name,team,owner){
         ch.name = name
         ch.team = team
         ch.owner = owner
-        return db.saveData(ch,channelUrl,"channel")
+        return db.saveData(ch,chMetaUrl,"chmeta")
   }
   else {
     return "CHEXISTS"
