@@ -2,6 +2,7 @@
 var Promise = require("bluebird");
 const assert = require('assert')
 const db = require('../db/')
+const online = require('../online/')
 let channelUrl = db.db2Url("channel")
 let chMetaUrl = db.db2Url("chmeta")
 
@@ -16,7 +17,7 @@ function findChannelsTeam(aTeam) {
 }
 
 
-function createChannel(name,team,owner){
+function createChannel(name,team,owner,purpuse){
   return findChannelName(name,team)
   .then(ach=>{
     if (!ach) {
@@ -26,12 +27,20 @@ function createChannel(name,team,owner){
         ch.name = name
         ch.team = team
         ch.owner = owner
-        return db.saveData(ch,chMetaUrl,"chmeta")
+        ch.purpuse = purpuse
+        db.saveData(ch,chMetaUrl,"chmeta")
+        .then(result=> online.broadcastChannel())
   }
   else {
-    return "CHEXISTS"
+    return Promise.resolve("CHEXISTS")
   }
 })
+}
+
+function initChannel(payload,conn) {
+  return createChannel(payload.channelname,
+  payload.team,
+  payload.sourceUser)
 }
 
 function init(team) {
@@ -40,14 +49,13 @@ function init(team) {
                   {name: "World"},
                   {name: "Onacci"}]
 
-  channels.map(aChannel=>createChannel(aChannel.name,team,"system"))
+  channels.map(aChannel=>createChannel(aChannel.name,team,"system","system"))
 }
 
 function getUserChannels(channelName,conn) {
-  //let channels = [{name: "General",notify: 0},{name: "News",notify: 0},{name: "World",notify:0},{name:"Onacci",notify:0}]
-//  conn.client.send(JSON.stringify({type: "channels",data: channels}))
-  findChannelsTeam(conn.team)
-  .then(channels=>{console.log("YYYYYY",channels);return countNotifications(channels,conn)})
+  console.log("getUserChannels",conn.team);
+  return  findChannelsTeam(conn.team)
+  .then(channels=>countNotifications(channels,conn))
   .then(array=>conn.client.send(JSON.stringify({type: "channels",data: array})))
 }
 
@@ -56,7 +64,6 @@ function countNotifications(channelArray,conn) {
   return Promise.all(channelArray.map(aChannel=>{
     return db.getData({"targetChannel": aChannel.name,team: conn.team},channelUrl,"channel")
     .then(array=>{
-      console.log("UUUUUU",array);
       if (array)
         return {name: aChannel.name,notify: array.length}
       return {name: aChannel.name,notify: 0}
@@ -83,5 +90,6 @@ function channelNotifyedMessage(message,conn) {
     getUserChannels,
     channelNotifyedMessage,
     init,
-    findChannelsTeam
+    findChannelsTeam,
+    initChannel
     }

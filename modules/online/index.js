@@ -5,11 +5,37 @@ const USERS = require('../users/')
 let sessUrl = db.db2Url("session")
 let chUrl = db.db2Url("channel")
 let p2pUrl = db.db2Url("p2p")
+let chMetaUrl = db.db2Url("chmeta")
+let channelUrl = db.db2Url("channel")
 
 
 let CLIENTS = []
 let CINDEX = -1
 
+
+function findChannelsTeam(aTeam) {
+  console.log("findChannelsTeam:",aTeam)
+  return db.getData({team: aTeam},chMetaUrl,"chmeta")
+}
+
+function getUserChannels(channelName,conn) {
+  return  findChannelsTeam(conn.team)
+  .then(channels=>{return countNotifications(channels,conn)})
+  .then(array=>conn.client.send(JSON.stringify({type: "channels",data: array})))
+}
+
+function countNotifications(channelArray,conn) {
+  return Promise.all(channelArray.map(aChannel=>{
+    return db.getData({"targetChannel": aChannel.name,team: conn.team},channelUrl,"channel")
+    .then(array=>{
+      let payload
+      payload = {name: aChannel.name,notify: 0}
+      if (array)
+        payload =  {name: aChannel.name,notify: array.length}
+      console.log(payload);
+      return payload
+      })}))
+  }
 
 
 function incIndex() {
@@ -80,6 +106,12 @@ function boradcastLogin() {
 })
 }
 
+function broadcastChannel() {
+  CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined || conn === null)
+  .forEach(conn=>{
+      getUserChannels("",conn)
+})
+}
 
 
 
@@ -240,6 +272,7 @@ function _playbackChannel(message,conn) {
       processSignal,
       processMessage,
       boradcastLogin,
+      broadcastChannel,
       processOnline,
       onlineList,
       addConn,

@@ -53,6 +53,7 @@ let sessUrl =  db2Url("session")
           .collection(collectionName)
           .find(query)
           .toArray()
+          .finally(db.close.bind(db))
       })
       .then(anArray=>{console.log(anArray.length)
       return anArray
@@ -71,6 +72,7 @@ let sessUrl =  db2Url("session")
         return db
           .collection(collectionName)
           .findOne(query)
+          .finally(db.close.bind(db))
       })
       .then(item=>{console.log(item)
       return item

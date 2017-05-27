@@ -102,6 +102,9 @@ function routeMessage(message,conn) {
       case "channels":
       channels.getUserChannels(m.payload,conn)
       break
+      case "createchannel":
+      channels.initChannel(m.payload,conn)
+      break
       case "whoAmI":
       processWhoAmI(m.payload,conn)
       break
