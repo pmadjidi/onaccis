@@ -26,7 +26,7 @@ function getUserChannels(channelName,conn) {
 
 function countNotifications(channelArray,conn) {
   return Promise.all(channelArray.map(aChannel=>{
-    return db.getData({"targetChannel": aChannel.name,team: conn.team},channelUrl,"channel")
+    return db.getData({"targetChannel": aChannel.name,team: conn.team,notifyed: {$nin: [conn.username]}},channelUrl,"channel")
     .then(array=>{
       let payload
       payload = {name: aChannel.name,notify: 0}
@@ -172,7 +172,8 @@ function processSignal(message,conn) {
 
 
       function _addMessageId(message){
-        message.id = crypto.createHash('sha1').update(message.content).digest('hex')
+        let salt = crypto.randomBytes(10).toString('hex')
+        message.id = crypto.createHash('sha1').update(message.content).digest('hex') + salt
       }
 
         function _addNotifyArray(message) {

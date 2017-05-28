@@ -62,7 +62,7 @@ function getUserChannels(channelName,conn) {
 
 function countNotifications(channelArray,conn) {
   return Promise.all(channelArray.map(aChannel=>{
-    return db.getData({"targetChannel": aChannel.name,team: conn.team},channelUrl,"channel")
+    return db.getData({"targetChannel": aChannel.name,team: conn.team,notifyed: {$nin: [conn.username]}},channelUrl,"channel")
     .then(array=>{
       if (array)
         return {name: aChannel.name,notify: array.length}
