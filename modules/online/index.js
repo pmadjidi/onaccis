@@ -166,7 +166,7 @@ function processSignal(message,conn) {
         .forEach(cl=>{
               let payload = {type: "message",payload: message}
               send(payload,cl)
-              console.log("Sendigng processMessage: ",payload)
+              console.log("Sending processMessage: ",payload)
           })
         }
 
@@ -238,7 +238,7 @@ function _playbackP2P(message,conn) {
       if (messageArray) {
       let timeStamp = new Date().getTime()
       messageArray.forEach(m=>{
-       let payload = {type: m.type,sourceUser: m.sourceUser,targetUser: m.targetUser,content: m.content,time: m.time}
+       let payload = {type: m.type,sourceUser: m.sourceUser,targetUser: m.targetUser,content: m.content,time: m.time,team: m.team}
        payload.replay = timeStamp
 
        send({type: "message",payload: payload},conn)
@@ -256,7 +256,8 @@ function _playbackChannel(message,conn) {
      if (messageArray) {
      let t = new Date().getTime()
      messageArray.forEach(m=>{
-      let payload = {type: m.type,sourceUser: m.sourceUser,targetChannel: m.targetChannel,content: m.content,time: m.time,id: m.id,replay: t}
+      let payload = {type: m.type,sourceUser: m.sourceUser,targetChannel: m.targetChannel,content: m.content,time: m.time,id: m.id,replay: t
+      ,team: m.team}
       if (m.notifyed && m.notifyed.indexOf(conn.username) > -1) {
          payload.notifyed =  "X"
        }

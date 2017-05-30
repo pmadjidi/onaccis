@@ -2,6 +2,8 @@
 const login = require('./modules/login/')
 const online = require('./modules/online/')
 const channels = require('./modules/channels/')
+const icon = require('./modules/icon/')
+const assets = require('./modules/assets/')
 const WebSocketServer = require('ws').Server,
   express = require('express'),
   https = require('https'),
@@ -55,11 +57,38 @@ wss.on('connection', client => {
   printConn(conn)
   online.addConn(conn)
 
-
+  client.onmessage = function (evt) {
+    console.log("type....",typeof(evt.data))
+    if (typeof evt.data === "string")
+      routeMessage(evt.data,conn)
+    if (evt.binary) {
+      console.log("Got a blob");
+      console.log(evt.data.length);
+      console.log(evt);
+      fs.writeFile('fileName.png', evt.data, 'binary', function (err) {
+            if (err) {
+                console.log("There was an error writing the image")
+            }
+            else {
+                console.log("The sheel file was written")
+            }
+        })
+    }
+  }
+  /*
   client.on('message', function (message) {
-  //console.log(new Date() + "Got message: " + conn.ip + conn.port + " " + message)
-  return routeMessage(message,conn)
-  });
+  console.log(message);
+  /* console.log(new Date() + "Got message: " + conn.ip + conn.port + " " + message)
+  e.data instanceof ArrayBuffer
+  e.data instanceof Blob
+  typeof e.data === "string"
+
+
+        routeMessage(message,conn)
+
+  })
+*/
+
 
   client.on('close', function(reasonCode, description) {
       console.log(new Date() + "Client disconnect " + conn.ip + conn.port + " reason: " + reasonCode + " description: " + description)
@@ -87,7 +116,13 @@ function printConn(conn){
 
 
 function routeMessage(message,conn) {
-  let m = JSON.parse(message)
+  let m
+  try {
+  m = JSON.parse(message)
+} catch (err) {
+  console.log(err)
+  return
+}
   console.log(JSON.stringify(m,null,4))
   let session = m.payload.session
 
@@ -116,6 +151,12 @@ function routeMessage(message,conn) {
       break
       case "seen":
       channels.channelNotifyedMessage(m.payload,conn)
+      break
+      case "avatar":
+      icon.processAvatar(m.payload,conn)
+      break
+      case "assets":
+      assets.processAsset(m.payload,conn)
       break
       default:
         console.log("Undefined message type: ", m)
