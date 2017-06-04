@@ -58,36 +58,16 @@ wss.on('connection', client => {
   online.addConn(conn)
 
   client.onmessage = function (evt) {
-    console.log("type....",typeof(evt.data))
-    if (typeof evt.data === "string")
+    if (typeof evt.data === "string") {
+      console.log("type....",typeof(evt.data))
       routeMessage(evt.data,conn)
+    }
     if (evt.binary) {
       console.log("Got a blob");
       console.log(evt.data.length);
-      console.log(evt);
-      fs.writeFile('fileName.png', evt.data, 'binary', function (err) {
-            if (err) {
-                console.log("There was an error writing the image")
-            }
-            else {
-                console.log("The sheel file was written")
-            }
-        })
     }
   }
-  /*
-  client.on('message', function (message) {
-  console.log(message);
-  /* console.log(new Date() + "Got message: " + conn.ip + conn.port + " " + message)
-  e.data instanceof ArrayBuffer
-  e.data instanceof Blob
-  typeof e.data === "string"
 
-
-        routeMessage(message,conn)
-
-  })
-*/
 
 
   client.on('close', function(reasonCode, description) {
