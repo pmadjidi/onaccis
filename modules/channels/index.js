@@ -21,75 +21,75 @@ function createChannel(name,team,owner,purpuse){
   return findChannelName(name,team)
   .then(ach=>{
     if (!ach) {
-        let date = new Date().getTime()
-        let ch = {}
-        ch.date = date
-        ch.name = name
-        ch.team = team
-        ch.owner = owner
-        ch.purpuse = purpuse
-        db.saveData(ch,chMetaUrl,"chmeta")
-        .then(result=> online.broadcastChannel())
-  }
-  else {
-    return Promise.resolve("CHEXISTS")
-  }
-})
+      let date = new Date().getTime()
+      let ch = {}
+      ch.date = date
+      ch.name = name
+      ch.team = team
+      ch.owner = owner
+      ch.purpuse = purpuse
+      db.saveData(ch,chMetaUrl,"chmeta")
+      .then(result=> online.broadcastChannel())
+    }
+    else {
+      return Promise.resolve("CHEXISTS")
+    }
+  })
 }
 
 function initChannel(payload,conn) {
   return createChannel(payload.channelname,
-  payload.team,
-  payload.sourceUser)
-}
+    payload.team,
+    payload.sourceUser)
+  }
 
-function init(team) {
-  let channels = [{name: "General"},
-                  {name: "News"},
-                  {name: "World"},
-                  {name: "Onacci"}]
+  function init(team) {
+    let channels = [{name: "General"},
+    {name: "News"},
+    {name: "World"},
+    {name: "Onacci"}]
 
-  channels.map(aChannel=>createChannel(aChannel.name,team,"system","system"))
-}
+    channels.map(aChannel=>createChannel(aChannel.name,team,"system","system"))
+  }
 
-function getUserChannels(channelName,conn) {
-  console.log("getUserChannels",conn.team);
-  return  findChannelsTeam(conn.team)
-  .then(channels=>countNotifications(channels,conn))
-  .then(array=>conn.client.send(JSON.stringify({type: "channels",data: array})))
-}
-
-
-function countNotifications(channelArray,conn) {
-  return Promise.all(channelArray.map(aChannel=>{
-    return db.getData({"targetChannel": aChannel.name,team: conn.team,notifyed: {$nin: [conn.username]}},channelUrl,"channel")
-    .then(array=>{
-      if (array)
-        return {name: aChannel.name,notify: array.length}
-      return {name: aChannel.name,notify: 0}
-      })}))
+  function getUserChannels(channelName,conn) {
+    console.log("getUserChannels",conn.team);
+    return  findChannelsTeam(conn.team)
+    .then(channels=>countNotifications(channels,conn))
+    .then(array=>conn.client.send(JSON.stringify({type: "channels",data: array})))
   }
 
 
+  function countNotifications(channelArray,conn) {
+    return Promise.all(channelArray.map(aChannel=>{
+      return db.getData({"targetChannel": aChannel.name,team: conn.team,notifyed: {$nin: [conn.username]}},channelUrl,"channel")
+      .then(array=>{
+        if (array)
+        return {name: aChannel.name,notify: array.length}
+        return {name: aChannel.name,notify: 0}
+      })}))
+    }
 
-function channelNotifyedMessage(message,conn) {
-  let data = {id: message.id},
+
+
+    function channelNotifyedMessage(message,conn) {
+      let data = {id: message.id},
       data1 = {
-            $addToSet: {
-              notifyed: message.sourceUser
-            }
+        $addToSet: {
+          notifyed: message.sourceUser
         }
-  db.updateData(data,data1)
-}
+      }
+      db.updateData(data,data1)
+    }
 
 
-
+    
     module.exports = {
-    findChannelName,
-    createChannel,
-    getUserChannels,
-    channelNotifyedMessage,
-    init,
-    findChannelsTeam,
-    initChannel
+      findChannelName,
+      createChannel,
+      getUserChannels,
+      channelNotifyedMessage,
+      init,
+      findChannelsTeam,
+      initChannel
     }

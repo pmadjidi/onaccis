@@ -43,18 +43,18 @@ function verifyUser(user,suggestedPassword){
   let hash = sha512(suggestedPassword,user.salt)
   console.log(hash.hash,user.hash)
   if (hash.hash === user.hash)
-    return true
+  return true
   return false
 }
 
 function sha512(password, salt){
-    var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
-    hash.update(password);
-    var value = hash.digest('hex');
-    return {
-        salt:salt,
-        hash:value
-    };
+  var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
+  hash.update(password);
+  var value = hash.digest('hex');
+  return {
+    salt:salt,
+    hash:value
+  };
 };
 
 function process(message,conn,broadFunc){
@@ -73,7 +73,7 @@ function process(message,conn,broadFunc){
   .then(firstTime=>findUser(conn))
   .then(user=>{
     if (!user)
-      throw "NotFound"
+    throw "NotFound"
     console.log("Found user:" + conn.username,"@ Team: ",conn.team)
     return user
   })
@@ -84,33 +84,33 @@ function process(message,conn,broadFunc){
       sess.createSession(conn)
       broadFunc()
       return conn.client.send(JSON.stringify({type: "auth",auth: "true",user: conn.username,
-       session: conn.session,team: conn.team}))
+        session: conn.session,team: conn.team}))
+      }
+      else {
+        console.log("Auth denied user " + message.username)
+        conn.auth  = false
+        return conn.client.send(JSON.stringify({type: "auth",auth: conn.auth, user: message.username,team: conn.team}))
+      }
+    })
+    .catch(err=>{
+      if (err === "NotFound") {
+        createUser(message.username,message.team,message.password)
+        .then(inserted=>{
+          ch.init(message.team)
+          console.log("User created: ",inserted);
+          sess.createSession(conn)
+          broadFunc()
+          conn.client.send(JSON.stringify({type: "auth",auth: conn.auth, user: conn.username,
+            session: conn.session,team: conn.team}))
+          })
+        }
+        else {
+          console.log(err)
+        }
+      })
     }
-    else {
-      console.log("Auth denied user " + message.username)
-      conn.auth  = false
-    return conn.client.send(JSON.stringify({type: "auth",auth: conn.auth, user: message.username,team: conn.team}))
-  }
-  })
-  .catch(err=>{
-  if (err === "NotFound") {
-  createUser(message.username,message.team,message.password)
-   .then(inserted=>{
-     ch.init(message.team)
-     console.log("User created: ",inserted);
-     sess.createSession(conn)
-     broadFunc()
-     conn.client.send(JSON.stringify({type: "auth",auth: conn.auth, user: conn.username,
-    session: conn.session,team: conn.team}))
- })
- }
- else {
-     console.log(err)
- }
-})
-}
 
 
-module.exports = {
-  process
-}
+    module.exports = {
+      process
+    }

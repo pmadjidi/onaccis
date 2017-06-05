@@ -27,8 +27,6 @@ function processAvatar(payload,conn) {
 
 
 
-
-
     module.exports = {
     processAvatar
     }
