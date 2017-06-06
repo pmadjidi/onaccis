@@ -163,7 +163,7 @@ function countNotifications(channelArray,conn) {
     }
 
     function _processMessageChannel(message,conn) {
-      CLIENTS.filter(connection=>connnection.team === conn.team)
+      CLIENTS.filter(connection=>connection.team === conn.team)
       .filter(teamConn=>teamConn.state !== "closed")
       .forEach(cl=>{
         let payload = {type: "message",payload: message}

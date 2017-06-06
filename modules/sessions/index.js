@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const db = require('../db/')
 let sessionUrl = db.db2Url("session")
 
-let SESSS_CACHE = {}
+let SESS_CACHE = {}
 
 
 
@@ -15,21 +15,48 @@ function createSession(conn) {
   conn.session = key
   conn.valid =  new Date().getTime()
   let payload = {username: conn.username,session: conn.session,valid: conn.valid,team: conn.team,ip: conn.ip,port: conn.port}
-  SESSS_CACHE[key] = payload
+  SESS_CACHE[key] = payload
   return db.saveData(payload,sessionUrl,"sessions")
 }
 
 function checkAuth(message,conn) {
   if (message.type === "login")
   return true
-  if (SESSS_CACHE[conn.session])
+  if (SESS_CACHE[conn.session])
   return true
   else {
     return false
   }
 }
 
+function processSession(payload,conn){
+console.log("validating session key:",payload.session);
+console.log("DEBUG",SESS_CACHE);
+if (SESS_CACHE[payload.session]) {
+  console.log("SEESSION STILL VALID......");
+  conn.client.send(JSON.stringify({type: "auth",auth: "true",user: conn.username,
+    session: conn.session,team: conn.team}))
+    conn.auth = true
+    conn.session = SESS_CACHE[payload.session].session
+    conn.valid = SESS_CACHE[payload.session].valid
+    conn.username =  SESS_CACHE[payload.session].username
+    conn.team =  SESS_CACHE[payload.session].team
+
+  }
+else {
+  console.log("SESSION INVALID.......");
+  conn.client.send(JSON.stringify({type: "auth",auth: "false",user: conn.username,
+      session: "null",team: conn.team}))
+      conn.auth = false
+      conn.session =  ""
+      conn.valid = false
+      conn.username =   ""
+      conn.team =  ""
+}
+}
+
 module.exports = {
   createSession,
-  checkAuth
+  checkAuth,
+  processSession
 }

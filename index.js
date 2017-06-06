@@ -4,6 +4,7 @@ const online = require('./modules/online/')
 const channels = require('./modules/channels/')
 const icon = require('./modules/icon/')
 const assets = require('./modules/assets/')
+const sessions = require('./modules/sessions/')
 const WebSocketServer = require('ws').Server,
   express = require('express'),
   https = require('https'),
@@ -127,7 +128,7 @@ function routeMessage(message,conn) {
       online.processMessage(m.payload,conn)
       break
       case "session":
-      console.log(m.payload)
+      sessions.processSession(m.payload,conn)
       break
       case "seen":
       channels.channelNotifyedMessage(m.payload,conn)
