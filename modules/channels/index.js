@@ -79,11 +79,11 @@ function initChannel(payload,conn) {
           notifyed: message.sourceUser
         }
       }
-      db.updateData(data,data1)
+      db.updateData(data,data1,conn)
     }
 
 
-    
+
     module.exports = {
       findChannelName,
       createChannel,
