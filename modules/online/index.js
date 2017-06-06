@@ -94,7 +94,9 @@ function countNotifications(channelArray,conn) {
 
 
     function boradcastLogin() {
-      CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined || conn === null)
+      CLIENTS.filter(conn=>conn.state !== "closed")
+      .filter(conn=>conn.username !== null)
+      .filter(conn=>conn.username !== undefined)
       .forEach(conn=>{
         onlineList(conn)
         .then(oList=>{
@@ -108,7 +110,9 @@ function countNotifications(channelArray,conn) {
     }
 
     function broadcastChannel() {
-      CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined || conn === null)
+      CLIENTS.filter(conn=>conn.state !== "closed")
+      .filter(conn=>conn.username !== null)
+      .filter(conn=>conn.username !== undefined)
       .forEach(conn=>{
         getUserChannels("",conn)
       })
@@ -117,7 +121,9 @@ function countNotifications(channelArray,conn) {
 
 
     function processSignal(message,conn) {
-      CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined || conn === null)
+      CLIENTS.filter(conn=>conn.state !== "closed")
+      .filter(conn=>conn.username !== null)
+      .filter(conn=>conn.username !== undefined)
       .forEach(conn=>{
         if (conn.username === message.targetUser) {
           let payload = {type: "signal",payload: message}
@@ -128,7 +134,9 @@ function countNotifications(channelArray,conn) {
 
     function _processMessageUser(message,conn) {
       console.log("_processMessage", message);
-      CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined || conn == null)
+      CLIENTS.filter(conn=>conn.state !== "closed")
+      .filter(conn=>conn.username !== null)
+      .filter(conn=>conn.username !== undefined)
       .forEach(conn=>{
         if ((conn.username === message.targetUser || conn.username === message.sourceUser ) && (conn.team === message.team)) {
           let payload = {type: "message",payload: message}
@@ -140,7 +148,9 @@ function countNotifications(channelArray,conn) {
 
     function _processTypingUser(message,conn) {
       console.log("_processMessage", message);
-      CLIENTS.filter(conn=>conn.state !== "closed" || conn.username === null || conn.username === undefined)
+      CLIENTS.filter(conn=>conn.state !== "closed")
+      .filter(conn=>conn.username !== null)
+      .filter(conn=>conn.username !== undefined)
       .forEach(conn=>{
         if ((conn.username === message.targetUser) && (conn.team === message.team)) {
           let payload = {type: "message",payload: message}
@@ -163,8 +173,9 @@ function countNotifications(channelArray,conn) {
     }
 
     function _processMessageChannel(message,conn) {
-      CLIENTS.filter(connection=>connection.team === conn.team)
-      .filter(teamConn=>teamConn.state !== "closed")
+
+      CLIENTS.filter(teamConn=>teamConn.state !== "closed")
+      .filter(connection=>{console.log("DEBUG",conn); return connection.team === conn.team})
       .forEach(cl=>{
         let payload = {type: "message",payload: message}
         send(payload,cl)

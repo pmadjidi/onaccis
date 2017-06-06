@@ -65,7 +65,7 @@ function image(payload,conn) {
       fs.writeFile(fpath + payload.file, bitmap);
       console.log('******** File created from base64 encoded string ********');
       db.saveData(payload,assetUrl,"assets")
-      .then(()=>online.processMessage(payload))
+      .then(()=>online.processMessage(payload,conn))
       console.log(payload);
     }
   })
