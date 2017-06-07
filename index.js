@@ -62,7 +62,7 @@ wss.on('connection', client => {
       routeMessage(evt.data,conn)
     }
 
-  }
+  })
 
 
 
