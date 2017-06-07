@@ -1,4 +1,5 @@
 "use strict"
+
 const login = require('./modules/login/')
 const online = require('./modules/online/')
 const channels = require('./modules/channels/')
@@ -62,7 +63,7 @@ wss.on('connection', client => {
       routeMessage(evt.data,conn)
     }
 
-  })
+
 
 
 
@@ -92,7 +93,7 @@ function printConn(conn){
 
 
 function routeMessage(message,conn) {
-  var m = ""
+  let m = ""
   try {
   m = JSON.parse(message)
 } catch (err) {
