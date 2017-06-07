@@ -59,14 +59,9 @@ wss.on('connection', client => {
   online.addConn(conn)
 
   client.onmessage = function (evt) {
-    if (typeof evt.data === "string") {
-      console.log("type....",typeof(evt.data))
       routeMessage(evt.data,conn)
     }
-    if (evt.binary) {
-      console.log("Got a blob");
-      console.log(evt.data.length);
-    }
+
   }
 
 
