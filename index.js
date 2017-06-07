@@ -92,7 +92,7 @@ function printConn(conn){
 
 
 function routeMessage(message,conn) {
-  let m = ""
+  var m = ""
   try {
   m = JSON.parse(message)
 } catch (err) {
