@@ -11,13 +11,13 @@ const WebSocketServer = require('ws').Server,
   app = express(),
   fs = require('fs');
 
-const pkey = fs.readFileSync('./ssl/key.pem'),
+const pkey = fs.readFileSync('./ssl/privkey.pem'),
   pcert = fs.readFileSync('./ssl/cert.pem'),
 
 
 
 
-  options = {key: pkey, cert: pcert, passphrase: '123456789'};
+options = {key: pkey, cert: pcert, passphrase: '123456789'};
 let wss = null, sslSrv = null
 
 // use express static to deliver resources HTML, CSS, JS, etc)
@@ -92,7 +92,7 @@ function printConn(conn){
 
 
 function routeMessage(message,conn) {
-  let m
+  let m = ""
   try {
   m = JSON.parse(message)
 } catch (err) {
