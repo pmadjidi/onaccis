@@ -60,7 +60,8 @@ wss.on('connection', client => {
   online.addConn(conn)
 
   client.onmessage = function (evt) {
-      routeMessage(evt.data,conn)
+    console.log(evt);
+    routeMessage(evt.data,conn)
     }
 
 
