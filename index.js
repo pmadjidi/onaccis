@@ -102,10 +102,8 @@ function routeMessage(message,conn) {
   return
 }
   console.log(JSON.stringify(m,null,4))
-  let session = m.payload.session
 
-
-  if (conn.auth || session) {
+  if (conn.auth) {
   switch (m.type){
       case "signal":
       online.processSignal(m.payload,conn)
@@ -141,7 +139,7 @@ function routeMessage(message,conn) {
 else {
   if (m.type === "session")
     {
-      return sessions.processSession(m.payload,conn)
+      sessions.processSession(m.payload,conn)
     }
   else {
   console.log("Processing login.....",JSON.stringify(m.payload,null,4))
