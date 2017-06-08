@@ -138,6 +138,7 @@ function countNotifications(channelArray,conn) {
       .filter(conn=>conn.username !== null)
       .filter(conn=>conn.username !== undefined)
       .forEach(conn=>{
+        console.log("processing _processMessageUser for user",conn.username,conn.team);
         if ((conn.username === message.targetUser || conn.username === message.sourceUser ) && (conn.team === message.team)) {
           let payload = {type: "message",payload: message}
           // console.log(cl.username,payload);

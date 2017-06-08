@@ -2,10 +2,9 @@
 const crypto = require('crypto');
 
 const db = require('../db/')
-let sessionUrl = db.db2Url("session")
-
+let sessionUrl = db.db2Url("sessions")
+let INIT = true
 let SESS_CACHE = {}
-
 
 
 
