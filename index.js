@@ -104,10 +104,6 @@ function routeMessage(message,conn) {
   console.log(JSON.stringify(m,null,4))
   let session = m.payload.session
 
-  if (m.type === "session")
-    {
-      return sessions.processSession(m.payload,conn)
-    }
 
   if (conn.auth || session) {
   switch (m.type){
@@ -143,7 +139,6 @@ function routeMessage(message,conn) {
   }
 }
 else {
-
   if (m.type === "session")
     {
       return sessions.processSession(m.payload,conn)
