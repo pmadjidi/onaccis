@@ -104,6 +104,11 @@ function routeMessage(message,conn) {
   console.log(JSON.stringify(m,null,4))
   let session = m.payload.session
 
+  if (m.type === "session")
+    {
+      return sessions.processSession(m.payload,conn)
+    }
+
   if (conn.auth || session) {
   switch (m.type){
       case "signal":
@@ -123,9 +128,6 @@ function routeMessage(message,conn) {
       break
       case "message":
       online.processMessage(m.payload,conn)
-      break
-      case "session":
-      sessions.processSession(m.payload,conn)
       break
       case "seen":
       channels.channelNotifyedMessage(m.payload,conn)
