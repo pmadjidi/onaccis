@@ -143,13 +143,15 @@ function routeMessage(message,conn) {
   }
 }
 else {
-  if (m.type !== "login" ) {
-    console.log("unauthenticated, redirecting to login.....", conn.username);
-    return conn.client.send(JSON.stringify({type: "auth",auth: "false", user: conn.username}))
-  }
 
+  if (m.type === "session")
+    {
+      return sessions.processSession(m.payload,conn)
+    }
+  else {
   console.log("Processing login.....",JSON.stringify(m.payload,null,4))
   return login.process(m.payload,conn,online.boradcastLogin)
+}
 }
 }
 
