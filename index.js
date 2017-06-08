@@ -60,7 +60,7 @@ wss.on('connection', client => {
   online.addConn(conn)
 
   client.onmessage = function (evt) {
-    console.log("Raw message recieved.....",conn.ip,": ",conn.port,": ",conn.auth,": ",evt.data);
+    console.log("Raw message recieved.....",conn.ip,"-",conn.port,"-",conn.auth,"-",evt.data);
     routeMessage(evt.data,conn)
     }
 
