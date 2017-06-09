@@ -88,9 +88,9 @@ function countNotificationsChannel(channelArray,conn) {
           if (aUser.username === conn.username)
           return
           if (userList.indexOf(aUser.username) > -1)
-          return {name: aUser.username, status: "online"}
+          return {name: aUser.name, status: "online",notify: aUser.notify}
           else {
-            return {name: aUser.username,status: "offline"}
+            return {name: aUser.name,status: "offline",notify: aUser.notify}
           }
         })
       })
