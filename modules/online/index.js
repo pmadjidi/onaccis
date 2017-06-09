@@ -87,6 +87,7 @@ function countNotificationsChannel(channelArray,conn) {
         return notifyedUserArray.map(aUser=>{
           if (aUser.name === conn.username)
           return
+          console.log("OnlineList, aUser.name",aUser.name);
           if (userList.indexOf(aUser.name) > -1)
           return {name: aUser.name, status: "online",notify: aUser.notify}
           else {
