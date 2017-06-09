@@ -167,7 +167,7 @@ function countNotificationsChannel(channelArray,conn) {
     }
 
     function _processTypingUser(message,conn) {
-      console.log("_processMessage", message);
+      console.log("_processTypingUser", message);
       CLIENTS.filter(conn=>conn.state !== "closed")
       .filter(conn=>conn.username !== null)
       .filter(conn=>conn.username !== undefined)
