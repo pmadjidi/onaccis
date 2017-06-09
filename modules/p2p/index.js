@@ -1,14 +1,8 @@
-
+'use strict'
 const db = require('../db/')
 const online = require('../online/')
 const users = require('../users/')
 let p2pUrl = db.db2Url("p2p")
-
-
-
-
-
-
 
 
   function userNotifyedMessage(message,conn) {
