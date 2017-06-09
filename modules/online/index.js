@@ -85,9 +85,9 @@ function countNotificationsChannel(channelArray,conn) {
       .then(userArray=>countNotificationsUser(userArray,conn))
       .then(notifyedUserArray=>{
         return notifyedUserArray.map(aUser=>{
-          if (aUser.username === conn.username)
+          if (aUser.name === conn.username)
           return
-          if (userList.indexOf(aUser.username) > -1)
+          if (userList.indexOf(aUser.name) > -1)
           return {name: aUser.name, status: "online",notify: aUser.notify}
           else {
             return {name: aUser.name,status: "offline",notify: aUser.notify}
