@@ -76,10 +76,10 @@ function initChannel(payload,conn) {
       let data = {id: message.id},
       data1 = {
         $addToSet: {
-          notifyed: message.sourceUser
+          notifyed: conn.username
         }
       }
-      db.updateData(data,data1,conn)
+      db.updateData(data,data1,"channel")
     }
 
 

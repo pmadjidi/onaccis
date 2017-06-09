@@ -3,6 +3,7 @@
 const login = require('./modules/login/')
 const online = require('./modules/online/')
 const channels = require('./modules/channels/')
+const p2p =  require('./modules/p2p/')
 const icon = require('./modules/icon/')
 const assets = require('./modules/assets/')
 const sessions = require('./modules/sessions/')
@@ -124,7 +125,11 @@ function routeMessage(message,conn) {
       online.processMessage(m.payload,conn)
       break
       case "seen":
-      channels.channelNotifyedMessage(m.payload,conn)
+      if (m.payload.type === "channel")
+        channels.channelNotifyedMessage(m.payload,conn)
+      else {
+        p2p.userNotifyedMessage(m.payload,conn)
+      }
       break
       case "avatar":
       icon.processAvatar(m.payload,conn)

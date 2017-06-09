@@ -84,14 +84,26 @@ let sessUrl =  db2Url("session")
 
 
 
-  function updateData(data,data1) {
+  function updateData(data,data1,type) {
+    let url
+    let coll
+    if (type === "channel")
+      {
+        url = channelsUrl
+        coll = "channel"
+      }
+    else {
+      url = p2pUrl
+      coll = "p2p"
+    }
+
     return MongoClient
-      .connect(channelsUrl, {
+      .connect(url, {
         promiseLibrary: Promise
       })
       .then(db => {
         return db
-          .collection('channel')
+          .collection(coll)
           .update(data,data1)
           .finally(db.close.bind(db))
       })
