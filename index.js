@@ -146,7 +146,7 @@ else {
     {
       sessions.processSession(m.payload,conn)
       if (conn.auth) {
-        online.BroadcastLogin()
+        online.boradcastLogin()
       }
     }
   else {
