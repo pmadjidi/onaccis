@@ -145,6 +145,9 @@ else {
   if (m.type === "session")
     {
       sessions.processSession(m.payload,conn)
+      if (conn.auth) {
+        online.BroadcastLogin()
+      }
     }
   else {
   console.log("Processing login.....",JSON.stringify(m.payload,null,4))
