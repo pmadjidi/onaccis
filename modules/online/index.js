@@ -20,11 +20,11 @@ function findChannelsTeam(aTeam) {
 
 function getUserChannels(channelName,conn) {
   return  findChannelsTeam(conn.team)
-  .then(channels=>{return countNotifications(channels,conn)})
+  .then(channels=>{return countNotificationsChannel(channels,conn)})
   .then(array=>conn.client.send(JSON.stringify({type: "channels",data: array})))
 }
 
-function countNotifications(channelArray,conn) {
+function countNotificationsChannel(channelArray,conn) {
   return Promise.all(channelArray.map(aChannel=>{
     return db.getData({"targetChannel": aChannel.name,team: conn.team,notifyed: {$nin: [conn.username]}},channelUrl,"channel")
     .then(array=>{
@@ -36,6 +36,19 @@ function countNotifications(channelArray,conn) {
       return payload
     })}))
   }
+
+
+  function countNotificationsUser(userArray,conn) {
+    return Promise.all(userArray.map(aUser=>{
+      return db.getData({targetUser: conn.username,sourceUser: aUser,team: conn.team,notifyed: {$nin: [conn.username]}},p2pUrl,"p2p")
+      .then(array=>{
+        if (array)
+        return {name: aUser.name,notify: array.length}
+        return {name: aUser.name,notify: 0}
+      })}))
+    }
+
+
 
 
   function incIndex() {
@@ -68,8 +81,9 @@ function countNotifications(channelArray,conn) {
       let userList = getOnLineUsers(conn)
       //  return USERS.getAllUsers()
       return USERS.getUsersInTeam(conn.team)
-      .then(userArray=>{
-        return userArray.map(aUser=>{
+      .then(userArray=>countNotificationsUser(userArray))
+      .then(notifyedUserArray=>{
+        return notifyedUserArray.map(aUser=>{
           if (aUser.username === conn.username)
           return
           if (userList.indexOf(aUser.username) > -1)
@@ -252,8 +266,14 @@ function countNotifications(channelArray,conn) {
         if (messageArray) {
           let timeStamp = new Date().getTime()
           messageArray.forEach(m=>{
-            let payload = {type: m.type,sourceUser: m.sourceUser,targetUser: m.targetUser,content: m.content,time: m.time,team: m.team}
+            var payload = Object.assign({},m);
+            delete payload._id
+            delete payload.notifyed
             payload.replay = timeStamp
+
+            if (m.notifyed && m.notifyed.indexOf(conn.username) > -1) {
+              payload.notifyed =  "X"
+            }
 
             send({type: "message",payload: payload},conn)
             console.log(payload)
