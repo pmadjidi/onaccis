@@ -97,6 +97,7 @@ function countNotificationsChannel(channelArray,conn) {
         })
       })
     }
+    console.log("Oh now emptry");
     return Promise.resolve([])
   }
 
