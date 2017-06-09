@@ -44,8 +44,8 @@ function countNotificationsChannel(channelArray,conn) {
       return db.getData({targetUser: conn.username,sourceUser: aUser.username,team: conn.team,notifyed: {$nin: [conn.username]}},p2pUrl,"p2p")
       .then(array=>{
         if (array)
-        return {name: aUser.name,notify: array.length}
-        return {name: aUser.name,notify: 0}
+        return {name: aUser.username,notify: array.length}
+        return {name: aUser.username,notify: 0}
       })}))
     }
 
