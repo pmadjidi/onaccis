@@ -82,7 +82,7 @@ function countNotificationsChannel(channelArray,conn) {
       let userList = getOnLineUsers(conn)
       //  return USERS.getAllUsers()
       return USERS.getUsersInTeam(conn.team)
-      .then(userArray=>countNotificationsUser(userArray))
+      .then(userArray=>countNotificationsUser(userArray,conn))
       .then(notifyedUserArray=>{
         return notifyedUserArray.map(aUser=>{
           if (aUser.username === conn.username)
