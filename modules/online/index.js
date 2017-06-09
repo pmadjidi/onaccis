@@ -41,7 +41,7 @@ function countNotificationsChannel(channelArray,conn) {
   function countNotificationsUser(userArray,conn) {
     console.log("countNotificationsUser",userArray);
     return Promise.all(userArray.map(aUser=>{
-      return db.getData({targetUser: conn.username,sourceUser: aUser,team: conn.team,notifyed: {$nin: [conn.username]}},p2pUrl,"p2p")
+      return db.getData({targetUser: conn.username,sourceUser: aUser.username,team: conn.team,notifyed: {$nin: [conn.username]}},p2pUrl,"p2p")
       .then(array=>{
         if (array)
         return {name: aUser.name,notify: array.length}
