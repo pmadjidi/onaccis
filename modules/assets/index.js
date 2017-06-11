@@ -62,7 +62,7 @@ function image(payload,conn) {
   mkdirp(fpath, function (err) {
     if (err) console.error(err)
     else {
-      fs.writeFile(fpath + payload.file, bitmapfunction,err => {
+      fs.writeFile(fpath + payload.file, bitmap,err => {
         if(err) {
           return console.log(err);
         }
