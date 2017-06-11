@@ -46,7 +46,7 @@ function initChannel(payload,conn) {
 
   function init(team) {
     let channels = [{name: "General",symb: "globe_with_meridians"},
-    {name: "News",symb: "newspape"},
+    {name: "News",symb: "newspaper"},
     {name: "World",symb: "earth_africa"},
     {name: "Music",symb: "musical_score"},
     {name: "Pictures",symb:"camera_with_flash"}]
