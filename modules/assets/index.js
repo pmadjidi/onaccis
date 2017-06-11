@@ -55,7 +55,7 @@ function image(payload,conn) {
   let user = payload.sourceUser
   let team = payload.team
   var bitmap = new Buffer(image, 'base64');
-  let fpath = "../onacci/public/assets/" + team + "/"
+  let fpath = "/assets/" + team + "/"
   payload.file = crypto.randomBytes(32).toString('hex')
   payload.content = ":ok_hand: File:" + filename + " uploaded...."
 
