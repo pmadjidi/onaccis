@@ -29,9 +29,9 @@ function countNotificationsChannel(channelArray,conn) {
     return db.getData({"targetChannel": aChannel.name,team: conn.team,notifyed: {$nin: [conn.username]}},channelUrl,"channel")
     .then(array=>{
       let payload
-      payload = {name: aChannel.name,notify: 0}
+      payload = {name: aChannel.name,symb: aChannel.symb,notify: 0}
       if (array)
-      payload =  {name: aChannel.name,notify: array.length}
+        payload.notify = array.length
       console.log(payload);
       return payload
     })}))
