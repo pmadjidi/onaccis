@@ -39,9 +39,12 @@ function createChannel(name,symb,team,owner,purpuse){
 }
 
 function initChannel(payload,conn) {
-  return createChannel(payload.channelname,
+  return createChannel(
+    payload.channelname,
+    payload.symb,
     payload.team,
-    payload.sourceUser)
+    conn.username,
+    payload.purpuse)
   }
 
   function init(team) {
