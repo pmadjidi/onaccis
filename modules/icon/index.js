@@ -12,7 +12,7 @@ function processAvatar(payload,conn) {
   let user = payload.sourceUser
   let team = payload.team
   var bitmap = new Buffer(image, 'base64');
-  let fpath = "../onacci/public/avatar/" + team + "/"
+  let fpath = "../onacci/build/avatar/" + team + "/"
 
   mkdirp(fpath, function (err) {
     if (err) console.error(err)
