@@ -17,7 +17,7 @@ function findChannelsTeam(aTeam) {
 }
 
 
-function createChannel(name,team,owner,purpuse){
+function createChannel(name,symb,team,owner,purpuse){
   return findChannelName(name,team)
   .then(ach=>{
     if (!ach) {
@@ -25,6 +25,7 @@ function createChannel(name,team,owner,purpuse){
       let ch = {}
       ch.date = date
       ch.name = name
+      ch.symb = symb
       ch.team = team
       ch.owner = owner
       ch.purpuse = purpuse
@@ -44,12 +45,13 @@ function initChannel(payload,conn) {
   }
 
   function init(team) {
-    let channels = [{name: "General"},
-    {name: "News"},
-    {name: "World"},
-    {name: "Onacci"}]
+    let channels = [{name: "General",symb: "globe_with_meridians"},
+    {name: "News",symb: "newspape"},
+    {name: "World",symb: "earth_africa"},
+    {name: "Music",symb: "musical_score"},
+    {name: "Pictures",symb:"camera_with_flash"}]
 
-    channels.map(aChannel=>createChannel(aChannel.name,team,"system","system"))
+    channels.map(aChannel=>createChannel(aChannel.name,aChannel.symb,team,"system","system"))
   }
 
   function getUserChannels(channelName,conn) {
