@@ -57,7 +57,7 @@ function image(payload,conn) {
   var bitmap = new Buffer(image, 'base64');
   let fpath = "../onacci/build/assets/" + team + "/"
   payload.file = crypto.randomBytes(32).toString('hex')
-  payload.content = ":ok_hand: File:" + filename + " uploaded...."
+  payload.content = ":checkered_flag: File:" + filename + " uploaded...."
 
   mkdirp(fpath, function (err) {
     if (err) console.error(err)
