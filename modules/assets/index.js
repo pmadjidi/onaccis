@@ -62,15 +62,19 @@ function image(payload,conn) {
   mkdirp(fpath, function (err) {
     if (err) console.error(err)
     else {
-      fs.writeFile(fpath + payload.file, bitmap);
-      console.log('******** File created from base64 encoded string ********');
-      db.saveData(payload,assetUrl,"assets")
-      .then(()=>online.processMessage(payload,conn))
-      console.log(payload);
+      fs.writeFile(fpath + payload.file, bitmapfunction,err => {
+        if(err) {
+          return console.log(err);
+        }
+        console.log('******** File created from base64 encoded string ********');
+        db.saveData(payload,assetUrl,"assets")
+        .then(()=>online.processMessage(payload,conn))
+        console.log(payload);
+      })
     }
   })
-
 }
+
 
 function sound(payload,conn) {
 
