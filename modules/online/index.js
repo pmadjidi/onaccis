@@ -229,7 +229,7 @@ function countNotificationsChannel(channelArray,conn) {
         _processMessageChannel(message,conn)
         _chStore(message)
       }
-      else if (messageType === "P2P" || messageType === "user" ) {
+      else if (messageType === "P2P") {
         _addMessageId(message)
         _processMessageUser(message,conn)
         _p2pStore(message)

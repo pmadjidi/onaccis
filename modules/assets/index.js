@@ -59,6 +59,9 @@ function image(payload,conn) {
   payload.file = crypto.randomBytes(32).toString('hex')
   payload.content = ":checkered_flag:    File:" + filename + " uploaded...."
 
+  if payload.type === "user"
+    payload.type = "P2P"
+
   mkdirp(fpath, function (err) {
     if (err) console.error(err)
     else {
