@@ -151,13 +151,14 @@ function countNotificationsChannel(channelArray,conn) {
     }
 
     function _processMessageUser(message,conn) {
-      console.log("_processMessage", message);
+      console.log("_processMessageUser", message);
       CLIENTS.filter(conn=>conn.state !== "closed")
       .filter(conn=>conn.username !== null)
       .filter(conn=>conn.username !== undefined)
+      .filter(conn=>conn.team === message.team)
       .forEach(conn=>{
         console.log("processing _processMessageUser for user",conn.username,conn.team);
-        if ((conn.username === message.targetUser || conn.username === message.sourceUser ) && (conn.team === message.team)) {
+        if ((conn.username === message.targetUser || conn.username === message.sourceUser )) {
           let payload = {type: "message",payload: message}
           console.log("Sending to: ",conn.username,payload)
           // console.log(cl.username,payload);
@@ -265,7 +266,7 @@ function countNotificationsChannel(channelArray,conn) {
     function _playbackP2P(message,conn) {
       console.log("GotPlayback P2P",message);
   //    let query = {$or: [{sourceUser: message.userName,team: conn.team},{targetUser: message.userName,team: conn.team}]}
-      let query = {targetUser: message.userName,team: conn.team}
+      let query = {targetUser: conn.username,team: conn.team}
       db.getData(query,p2pUrl,"p2p")
       .then(messageArray=>{
         if (messageArray) {
