@@ -42,7 +42,7 @@ function getAssetForChannel(payload,conn) {
 
 
 function getAssetForUser(payload,conn) {
-  db.getData({team: conn.team,targetUser: payload.userName},assetUrl,"assets")
+  db.getData({team: conn.team,sourceUser: payload.userName,targetUser: conn.username},assetUrl,"assets")
   .then(assets=>{console.log(assets);return conn.client.send(JSON.stringify({type: "assets",payload: assets}))})
 
 }
