@@ -42,7 +42,13 @@ function getAssetForChannel(payload,conn) {
 
 
 function getAssetForUser(payload,conn) {
-  db.getData({team: conn.team,sourceUser: payload.userName,targetUser: conn.username},assetUrl,"assets")
+  db.getData(
+    {$or [
+      {team: conn.team,sourceUser: payload.userName,targetUser: conn.username},
+      {team: conn.team,sourceUser: conn.username,targetUser: payload.userName}
+      ]
+      },
+    assetUrl,"assets")
   .then(assets=>{console.log(assets);return conn.client.send(JSON.stringify({type: "assets",payload: assets}))})
 
 }
