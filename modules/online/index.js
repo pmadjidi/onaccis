@@ -264,7 +264,8 @@ function countNotificationsChannel(channelArray,conn) {
 
     function _playbackP2P(message,conn) {
       console.log("GotPlayback P2P",message);
-      let query = {$or: [{sourceUser: message.userName,team: conn.team},{targetUser: message.userName,team: conn.team}]}
+  //    let query = {$or: [{sourceUser: message.userName,team: conn.team},{targetUser: message.userName,team: conn.team}]}
+      let query = {targetUser: message.userName,team: conn.team}
       db.getData(query,p2pUrl,"p2p")
       .then(messageArray=>{
         if (messageArray) {
