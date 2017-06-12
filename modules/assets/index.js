@@ -43,7 +43,7 @@ function getAssetForChannel(payload,conn) {
 
 function getAssetForUser(payload,conn) {
   db.getData(
-    {$or [
+    {$or: [
       {team: conn.team,sourceUser: payload.userName,targetUser: conn.username},
       {team: conn.team,sourceUser: conn.username,targetUser: payload.userName}
       ]
