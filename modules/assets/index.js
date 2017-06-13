@@ -61,7 +61,7 @@ function image(payload,conn) {
   let user = payload.sourceUser
   let team = payload.team
   var bitmap = new Buffer(image, 'base64');
-  let fpath = "../onacci/build/assets/" + team + "/"
+  let fpath = "../web/build/assets/" + team + "/"
   payload.file = crypto.randomBytes(32).toString('hex')
   payload.content = ":checkered_flag:    File:" + filename + " uploaded...."
 
