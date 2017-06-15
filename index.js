@@ -14,15 +14,14 @@ const WebSocketServer = require('ws').Server,
   fs = require('fs');
 
 const pkey = fs.readFileSync('./ssl/privkey.pem'),
-  pcert = fs.readFileSync('./ssl/cert.pem')
-
- sessions.init()
+  pcert = fs.readFileSync('./ssl/cert.pem'),
 
 options = {key: pkey, cert: pcert, passphrase: '123456789'};
 let wss = null, sslSrv = null
 
 // use express static to deliver resources HTML, CSS, JS, etc)
 // from the public folder
+sessions.init()
 app.use(express.static('public'));
 
 app.use(function(req, res, next) {
