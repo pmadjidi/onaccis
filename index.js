@@ -14,7 +14,7 @@ const WebSocketServer = require('ws').Server,
   fs = require('fs');
 
 const pkey = fs.readFileSync('./ssl/privkey.pem'),
-  pcert = fs.readFileSync('./ssl/cert.pem'),
+  pcert = fs.readFileSync('./ssl/cert.pem')
 
  sessions.init()
 
