@@ -57,7 +57,7 @@ else {
 
 function init() {
   db.getData({},sessionUrl,"sessions")
-  .then(array=>array.foreach(item=>console.log(item.sess)))
+  .then(array=>array.forEach(item=>console.log(item.sess)))
 }
 
 module.exports = {
