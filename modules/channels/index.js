@@ -70,8 +70,8 @@ function initChannel(payload,conn) {
       return db.getData({"targetChannel": aChannel.name,team: conn.team,notifyed: {$nin: [conn.username]}},channelUrl,"channel")
       .then(array=>{
         if (array)
-        return {name: aChannel.name,symb: aChannel.symb,notify: array.length}
-        return {name: aChannel.name,symb: aChannel.symb,notify: 0}
+        return {name: aChannel.name,symb: aChannel.symb,notify: array.length,purpuse: array.purpuse}
+        return {name: aChannel.name,symb: aChannel.symb,purpuse: array.purpuse,notify: 0}
       })}))
     }
 
