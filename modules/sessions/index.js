@@ -54,8 +54,14 @@ else {
 }
 }
 
+
+function init() (
+  
+)
+
 module.exports = {
   createSession,
   checkAuth,
-  processSession
+  processSession,
+  init
 }

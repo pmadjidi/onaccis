@@ -57,11 +57,19 @@ function sha512(password, salt){
   };
 };
 
+
+
 function process(message,conn,broadFunc){
 
   conn.username = message.username
   conn.team = message.team
   let initTeam = false
+
+  if ( conn.username === "" || conn.team === "") {
+    conn.auth = false
+    return conn.client.send(JSON.stringify({type: "auth",auth: conn.auth, user: conn.username,team: conn.team})
+  }
+
   return findTeam(conn)
   .then(team=>{
     if(!team) {
