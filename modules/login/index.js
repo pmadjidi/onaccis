@@ -67,7 +67,7 @@ function process(message,conn,broadFunc){
 
   if ( conn.username === "" || conn.team === "") {
     conn.auth = false
-    return conn.client.send(JSON.stringify({type: "auth",auth: conn.auth, user: conn.username,team: conn.team})
+    return conn.client.send(JSON.stringify({type: "auth",auth: conn.auth, user: conn.username,team: conn.team}))
   }
 
   return findTeam(conn)
