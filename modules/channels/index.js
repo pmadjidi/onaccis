@@ -54,19 +54,16 @@ function initChannel(payload,conn) {
 
   function init(team) {
     let channels = [{name: "General",symb: "globe_with_meridians"},
-    {name: "News",symb: "newspaper"},
-    {name: "World",symb: "earth_africa"},
-    {name: "Music",symb: "musical_score"},
-    {name: "Pictures",symb:"camera_with_flash"},
+    {name: "Nyheter",symb: "newspaper"},
+    {name: "Världen",symb: "earth_africa"},
+    {name: "Musik",symb: "musical_score"},
+    {name: "Bilder",symb:"camera_with_flash"},
     {name: "Grannar",symb: "couple"},
     {name: "Loppis",symb: "shopping_trolley"},
     {name: "Anslagstavla",symb:"clipboard"},
     {name: "Tvättstuga",symb:"jeans"},
     {name: "Event",symb:"spiral_calendar_pad"},
-
-
-
-  ]
+  ].sort((a,b)=>a.name - b.name)
 
     channels.map(aChannel=>createChannel(aChannel.name,aChannel.symb,team,"system","system"))
   }
