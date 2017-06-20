@@ -2,7 +2,7 @@
 var Promise = require("bluebird");
 const assert = require('assert')
 const db = require('../db/')
-const util = require('../util/')
+const utils = require('../utils/')
 const online = require('../online/')
 let channelUrl = db.db2Url("channel")
 let chMetaUrl = db.db2Url("chmeta")
@@ -72,7 +72,7 @@ function initChannel(payload,conn) {
       return db.getData({"targetChannel": aChannel.name,team: conn.team,notifyed: {$nin: [conn.username]}},channelUrl,"channel")
       .then(array=>{
         if (aChannel.purpuse === "") {
-          aChannel.purpuse = "Created by " + util.CL(aChannel.owner)
+          aChannel.purpuse = "Created by " + utils.CL(aChannel.owner)
         }
         if (array)
         return {name: aChannel.name,symb: aChannel.symb,notify: array.length,purpuse: aChannel.purpuse}
