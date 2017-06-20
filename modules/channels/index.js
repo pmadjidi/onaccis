@@ -50,11 +50,7 @@ function initChannel(payload,conn) {
   }
 
 
-  Grannar
-  Loppis
-  Anslagstavla
-  Boka Tvättstuga
-  Event
+
 
   function init(team) {
     let channels = [{name: "General",symb: "globe_with_meridians"},
