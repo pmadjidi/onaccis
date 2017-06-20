@@ -49,12 +49,28 @@ function initChannel(payload,conn) {
     payload.purpuse)
   }
 
+
+  Grannar
+  Loppis
+  Anslagstavla
+  Boka Tvättstuga
+  Event
+
   function init(team) {
     let channels = [{name: "General",symb: "globe_with_meridians"},
     {name: "News",symb: "newspaper"},
     {name: "World",symb: "earth_africa"},
     {name: "Music",symb: "musical_score"},
-    {name: "Pictures",symb:"camera_with_flash"}]
+    {name: "Pictures",symb:"camera_with_flash"},
+    {name: "Grannar",symb: "couple"},
+    {name: "Loppis",symb: "shopping_trolley"},
+    {name: "Anslagstavla",symb:"clipboard"},
+    {name: "Tvättstuga",symb:"jeans"},
+    {name: "Event",symb:"spiral_calendar_pad"},
+
+
+
+  ]
 
     channels.map(aChannel=>createChannel(aChannel.name,aChannel.symb,team,"system","system"))
   }
