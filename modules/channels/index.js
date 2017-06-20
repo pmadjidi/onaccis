@@ -69,6 +69,9 @@ function initChannel(payload,conn) {
     return Promise.all(channelArray.map(aChannel=>{
       return db.getData({"targetChannel": aChannel.name,team: conn.team,notifyed: {$nin: [conn.username]}},channelUrl,"channel")
       .then(array=>{
+        if (aChannel.purpuse === "") {
+          aChannel.purpuse = "Created by " + aChannel.owner
+        }
         if (array)
         return {name: aChannel.name,symb: aChannel.symb,notify: array.length,purpuse: aChannel.purpuse}
         return {name: aChannel.name,symb: aChannel.symb,purpuse: aChannel.purpuse,notify: 0}
