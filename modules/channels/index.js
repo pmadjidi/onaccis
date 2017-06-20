@@ -63,7 +63,7 @@ function initChannel(payload,conn) {
     {name: "Anslagstavla",symb:"clipboard"},
     {name: "Tvättstuga",symb:"jeans"},
     {name: "Event",symb:"spiral_calendar_pad"},
-  ].sort((a,b)=>a.name - b.name)
+  ]
 
     channels.map(aChannel=>createChannel(aChannel.name,aChannel.symb,team,"system","system"))
   }
@@ -72,7 +72,7 @@ function initChannel(payload,conn) {
     console.log("getUserChannels",conn.team);
     return  findChannelsTeam(conn.team)
     .then(channels=>countNotifications(channels,conn))
-    .then(array=>conn.client.send(JSON.stringify({type: "channels",data: array})))
+    .then(array=>conn.client.send(JSON.stringify({type: "channels",data: array.sort((a,b)=>a.name - b.name)})))
   }
 
 
