@@ -1,5 +1,6 @@
 "use strict"
-CL(string) {
+
+function CL(string) {
     if (string)
       return string.charAt(0).toUpperCase() + string.slice(1);
     else {
