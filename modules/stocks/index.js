@@ -60,7 +60,7 @@ function getTimeSerie(symbol,conn) {
 .then(stock=>conn.send(JSON.stringify({type: "stock",stock: symbol,data: stock})))
 .catch(err=>{
   console.log(err)
-  conn.send(JSON.stringify({type: "stock",stock: symbol,data: []}))
+  conn.client.send(JSON.stringify({type: "stock",stock: symbol,data: []}))
 })
 }
 
