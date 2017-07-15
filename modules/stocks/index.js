@@ -67,7 +67,7 @@ function getTimeSerie(symbol,conn) {
 
 
 
-function getStockNews(symbol) {
+function getStockNews(symbol,conn) {
 return googleFinance.companyNews({
    symbol
  })
