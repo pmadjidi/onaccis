@@ -145,7 +145,7 @@ function routeMessage(message,conn) {
       stocks.processStocks(m.payload,conn)
       break
       default:
-        console.log("Undefined message type: ", m)
+        console.log("Main module, Undefined message type: ", m)
   }
 }
 else {

@@ -23,7 +23,7 @@ function processStocks(payload,conn) {
     getStockList(conn)
     break
     default:
-    console.log("processAsset, Undefined message type: ",type)
+    console.log("processStocks, Undefined message type: ",type)
   }
 
 }
@@ -38,6 +38,15 @@ function getAssetForChannel(payload,conn) {
 }
 
 
+function getDateNow() {
+var dateObj = new Date();
+var month = dateObj.getUTCMonth() + 1; //months from 1-12
+var day = dateObj.getUTCDate();
+var year = dateObj.getUTCFullYear();
+newdate = year + "-" + month + "-" + day
+console.log(newdate)
+return newdate
+}
 
 
 function getTimeSerie(symbol,conn) {
