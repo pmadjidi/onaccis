@@ -8,8 +8,6 @@ const online  = require('../online/')
 const assetUrl = db.db2Url("assets")
 
 
-
-
 function processAsset(payload,conn) {
   let type
   if (payload.file)
@@ -62,8 +60,33 @@ function image(payload,conn) {
   let team = payload.team
   var bitmap = new Buffer(image, 'base64');
   let fpath = "../web/build/assets/" + team + "/"
+  let contentSymbol
+  let fileExt
+
+  fileExt = message.name.split('.').pop().toUpperCase();
+  switch (fileExt) {
+      case "GIF":
+      case "TIF":
+      case "SVG":
+      case "BMP":
+      case "PNG":
+      case "JPG":
+      contentSymbol = ":camera: "
+      break
+      case "MP3":
+      contentSymbol = ":musical_note: "
+
+      break
+      case "PDF":
+      contentSymbol = ":page_with_curl:"
+      break
+      default:
+        console.log("Unknown media file.....");
+    }
+
+
   payload.file = crypto.randomBytes(32).toString('hex')
-  payload.content = ":checkered_flag:    File:" + filename + " uploaded...."
+  payload.content = contentSymbol + "   " + filename
 
   if (payload.type === "user")
     payload.type = "P2P"
@@ -84,14 +107,6 @@ function image(payload,conn) {
   })
 }
 
-
-function sound(payload,conn) {
-
-}
-
-function video(payload,conn) {
-
-}
 
 
 

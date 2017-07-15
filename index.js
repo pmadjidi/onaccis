@@ -6,6 +6,7 @@ const channels = require('./modules/channels/')
 const p2p =  require('./modules/p2p/')
 const icon = require('./modules/icon/')
 const assets = require('./modules/assets/')
+const stocks = require('./modules/stocks/')
 const sessions = require('./modules/sessions/')
 const WebSocketServer = require('ws').Server,
   express = require('express'),
@@ -139,6 +140,9 @@ function routeMessage(message,conn) {
       break
       case "assets":
       assets.processAsset(m.payload,conn)
+      break
+      case "stocks":
+      stocks.processStocks(m.payload,conn)
       break
       default:
         console.log("Undefined message type: ", m)

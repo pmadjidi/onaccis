@@ -49,10 +49,7 @@ function initChannel(payload,conn) {
     payload.purpuse)
   }
 
-
-
-
-  function init(team) {
+  function regularType() {
     let channels = [{name: "General",symb: "globe_with_meridians"},
     {name: "Nyheter",symb: "newspaper"},
     {name: "Världen",symb: "earth_africa"},
@@ -64,7 +61,36 @@ function initChannel(payload,conn) {
     {name: "Tvättstuga",symb:"jeans"},
     {name: "Event",symb:"spiral_calendar_pad"},
   ]
+      return channels
+  }
 
+
+  function tradingType() {
+    let channels = [{name: "General",symb: "globe_with_meridians"},
+    {name: "News",symb: "newspaper"},
+    {name: "Markets",symb: "earth_africa"},
+    {name: "Stocks",symb: "musical_score"},
+    {name: "Fonds",symb:"camera_with_flash"},
+    {name: "Portfolios",symb: "briefcase"},
+    {name: "Robot advisors",symb: "robot_face"},
+    {name: "Bull",symb:"chart_with_upwards_trend"},
+    {name: "Bear",symb:"chart_with_downwards_trend"},
+    {name: "Event",symb:"spiral_calendar_pad"},
+  ]
+      return channels
+  }
+
+
+
+  function init(team,type) {
+    let channels
+    switch (type) {
+      case "trading":
+      channels = tradingType()
+      break
+      default:
+      channels = regularType()
+    }
     channels.map(aChannel=>createChannel(aChannel.name,aChannel.symb,team,"system","system"))
   }
 
