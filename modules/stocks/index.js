@@ -17,7 +17,7 @@ function processStocks(payload,conn) {
     getTimeSerie(payload.stock,conn)
     break
     case "news":
-    getNews(payload.stock,conn)
+    getStockNews(payload.stock,conn)
     break
     case "list":
     getStockList(conn)
