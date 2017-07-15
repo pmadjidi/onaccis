@@ -57,7 +57,7 @@ function getTimeSerie(symbol,conn) {
   from, // from
   to // to
 })
-.then(stock=>conn.send(JSON.stringify({type: "stock",stock: symbol,data: stock})))
+.then(stock=>conn.client.send(JSON.stringify({type: "stock",stock: symbol,data: stock})))
 .catch(err=>{
   console.log(err)
   conn.client.send(JSON.stringify({type: "stock",stock: symbol,data: []}))
@@ -71,10 +71,10 @@ function getStockNews(symbol) {
 return googleFinance.companyNews({
    symbol
  })
- .then(news=>conn.send(JSON.stringify({type: "stocknews",stock: symbol,data: news})))
+ .then(news=>conn.client.send(JSON.stringify({type: "stocknews",stock: symbol,data: news})))
  .catch(err=>{
    console.log(err)
-   conn.send(JSON.stringify({type: "stocknews",stock: symbol,data: []}))
+   conn.client.send(JSON.stringify({type: "stocknews",stock: symbol,data: []}))
  })
 }
 
