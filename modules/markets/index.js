@@ -14,10 +14,10 @@ function processMarkets(payload,conn) {
   let type = payload.type
   switch (type) {
     case "timeserie":
-    getTimeSerie(payload.stock,conn)
+    getTimeSerie(payload.instrument,conn)
     break
     case "news":
-    getStockNews(payload.stock,conn)
+    getStockNews(payload.instrument,conn)
     break
     case "list":
     getStockList(conn)
