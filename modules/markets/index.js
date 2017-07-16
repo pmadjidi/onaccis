@@ -29,9 +29,9 @@ function processMarkets(payload,conn) {
 }
 
 function getStockList(conn){
-  let payload = JSON.stringify({type: "markets", payload: {instrumentlist: companyJson}}
+  let payload = JSON.stringify({type: "markets", payload: {instrumentlist: companyJson}})
   console.log("getStockList",payload);
-  conn.client.send(JSON.stringify(payload))
+  conn.client.send(payload)
 }
 
 function getAssetForChannel(payload,conn) {
