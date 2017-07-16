@@ -29,7 +29,7 @@ function processMarkets(payload,conn) {
 }
 
 function getStockList(conn){
-  conn.client.send(JSON.stringify({type: "list", data: companyJson }))
+  conn.client.send(JSON.stringify({type: "markets", data: {instrumentlist: companyJson}}))
 }
 
 function getAssetForChannel(payload,conn) {
@@ -57,10 +57,10 @@ function getTimeSerie(symbol,conn) {
   from, // from
   to // to
 })
-.then(stock=>conn.client.send(JSON.stringify({payload: {type: "stock",stock: symbol,data: stock}})))
+.then(timeseries=>conn.client.send(JSON.stringify({type: "markets",data: {type: "stock",instrument: symbol,timeseries: timeseries})))
 .catch(err=>{
   console.log(err)
-  conn.client.send(JSON.stringify({type: "stock",stock: symbol,data: []}))
+  conn.client.send(JSON.stringify({type: "markets",data: {type: "stock",instrument: symbol,timeseries: []}}))
 })
 }
 
@@ -71,10 +71,10 @@ function getStockNews(symbol,conn) {
 return googleFinance.companyNews({
    symbol
  })
- .then(news=>conn.client.send(JSON.stringify({type: "stocknews",stock: symbol,data: news})))
+ .then(news=>conn.client.send(JSON.stringify({type: "markets", data: {type: "news",instrument: symbol,data: news}})))
  .catch(err=>{
    console.log(err)
-   conn.client.send(JSON.stringify({type: "stocknews",stock: symbol,data: []}))
+   conn.client.send(JSON.stringify({type: "markets", data: {type: "news",instrument: symbol,data: []}}))
  })
 }
 
