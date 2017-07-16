@@ -10,7 +10,7 @@ let sessionUrl = db.db2Url("sessions")
 
 
 //  payload = {type: "stocks",payload: {type,targetChannel,content}}
-function processStocks(payload,conn) {
+function processMarkets(payload,conn) {
   let type = payload.type
   switch (type) {
     case "timeserie":
@@ -80,5 +80,5 @@ return googleFinance.companyNews({
 
 
 module.exports = {
-  processStocks
+  processMarkets
 }
