@@ -29,7 +29,7 @@ function processMarkets(payload,conn) {
 }
 
 function getStockList(conn){
-  conn.send(JSON.stringify({type: "list", data: companyJson }))
+  conn.client.send(JSON.stringify({type: "list", data: companyJson }))
 }
 
 function getAssetForChannel(payload,conn) {
