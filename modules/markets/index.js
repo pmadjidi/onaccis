@@ -57,7 +57,7 @@ function getTimeSerie(payload,conn) {
   let type = payload.selected.type
   let symbol = payload.instrument
   let sourceUser = payload.sourceUser
-  let newPayload = {typ,symbol,sourceUser}
+  let newPayload = {type,symbol,sourceUser}
   if (type === "user") {
     newPayload.type = "P2P"
     newPayload.targetUser = payload.selected.targetUser
@@ -97,7 +97,7 @@ function getStockNews(payload,conn) {
   let type = payload.selected.type
   let symbol = payload.instrument
   let sourceUser = payload.sourceUser
-  let newPayload = {typ,symbol,sourceUser}
+  let newPayload = {type,symbol,sourceUser}
   if (type === "user") {
     type = "P2P"
     newPayload.targetUser = payload.targetUser
