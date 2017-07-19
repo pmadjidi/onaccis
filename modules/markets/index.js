@@ -59,8 +59,7 @@ function getTimeSerie(payload,conn) {
   let sourceUser = payload.sourceUser
   let team = payload.team
   let newPayload = {type,symbol,sourceUser,team}
-  if (type === "user") {
-    newPayload.type = "P2P"
+  if (type === "P2P") {
     newPayload.targetUser = payload.selected.targetUser
   }
   else {
@@ -70,13 +69,13 @@ function getTimeSerie(payload,conn) {
   console.log("getTimeSerie",newPayload);
   let from = '2014-01-01'
   let to =   getDateNow()
+  newPayload.content = ":chart_with_upwards_trend:" + symbol + " until:  " + to
   return googleFinance.historical({
   symbol,
   from, // from
   to // to
 })
 .then(timeseries=>{
-  timeseries.map(item=>{item.date = new Date(item.date).getTime()})
   db.saveData(timeseries,marketsUrl,"timeseries")
   newPayload.timeseries = timeseries
   newPayload.content = ":chart_with_upwards_trend:" + symbol + " until:  " + to
@@ -99,14 +98,16 @@ function getStockNews(payload,conn) {
   let type = payload.selected.type
   let symbol = payload.instrument
   let sourceUser = payload.sourceUser
-  let newPayload = {type,symbol,sourceUser}
-  if (type === "user") {
-    type = "P2P"
-    newPayload.targetUser = payload.targetUser
+  let team = payload.team
+  let newPayload = {type,symbol,sourceUser,team}
+  if (type === "P2P") {
+    newPayload.targetUser = payload.selected.targetUser
   }
   else {
-  newPayload.targetChannel = payload.targetChannel
+  newPayload.targetChannel = payload.selected.targetChannel
   }
+  newPayload.content = ":newspaper:" + symbol
+
 return googleFinance.companyNews({
    symbol
  })
