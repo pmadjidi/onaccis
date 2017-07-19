@@ -75,13 +75,13 @@ function getTimeSerie(payload,conn) {
   newPayload.timeseries = timeseries
   online.processMessage(newPayload,conn)
   //conn.client.send(JSON.stringify({type: "markets",payload: {type: "stock",instrument: symbol,timeseries: timeseries}}))})
+})
 .catch(err=>{
   newPayload.timeseries = []
   online.processMessage(newPayload,conn)
   console.log(err)
   //conn.client.send(JSON.stringify({type: "markets",payload: {type: "stock",instrument: symbol,timeseries: []}}))
 })
-}
 }
 
 
