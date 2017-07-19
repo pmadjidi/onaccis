@@ -57,7 +57,8 @@ function getTimeSerie(payload,conn) {
   let type = payload.selected.type
   let symbol = payload.instrument
   let sourceUser = payload.sourceUser
-  let newPayload = {type,symbol,sourceUser}
+  let team = payload.team
+  let newPayload = {type,symbol,sourceUser,team}
   if (type === "user") {
     newPayload.type = "P2P"
     newPayload.targetUser = payload.selected.targetUser
