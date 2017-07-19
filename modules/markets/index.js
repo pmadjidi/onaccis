@@ -75,6 +75,7 @@ function getTimeSerie(payload,conn) {
   db.saveData(timeseries,marketsUrl,"timeseries")
   newPayload.timeseries = timeseries
   online.processMessage(newPayload,conn)
+  console.log("getTimeSerie",timeseries);
   //conn.client.send(JSON.stringify({type: "markets",payload: {type: "stock",instrument: symbol,timeseries: timeseries}}))})
 })
 .catch(err=>{
