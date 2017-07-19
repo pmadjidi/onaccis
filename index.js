@@ -102,7 +102,7 @@ function routeMessage(message,conn) {
   return
 }
 
-  if (!m.type === "assets")
+  if (m.type !== "assets")
     console.log(JSON.stringify(m,null,4))
   else {
     console.log("Asset command recieved....");
