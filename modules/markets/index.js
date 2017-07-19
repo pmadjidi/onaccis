@@ -59,10 +59,10 @@ function getTimeSerie(payload,conn) {
   let newPayload = {type,symbol}
   if (type === "user") {
     newPayload.type = "P2P"
-    newPayload.targetUser = payload.targetUser
+    newPayload.targetUser = payload.selected.targetUser
   }
   else {
-  newPayload.targetChannel = payload.targetChannel
+  newPayload.targetChannel = payload.selected.targetChannel
   }
 
   console.log("getTimeSerie",newPayload);
