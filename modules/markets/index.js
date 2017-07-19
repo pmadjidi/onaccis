@@ -76,8 +76,9 @@ function getTimeSerie(payload,conn) {
   to // to
 })
 .then(timeseries=>{
-  db.saveData(timeseries,marketsUrl,"timeseries")
-  newPayload.timeseries = timeseries
+  let formatedTimeSeries = timeseries.map(item=>{item.date = new Date(item.date)})
+  db.saveData(formatedTimeSeries,marketsUrl,"timeseries")
+  newPayload.timeseries = formatedTimeSeries
   newPayload.content = ":chart_with_upwards_trend:" + symbol + " until:  " + to
   online.processMessage(newPayload,conn)
   //console.log("getTimeSerie",timeseries);
