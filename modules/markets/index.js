@@ -78,7 +78,7 @@ function getTimeSerie(payload,conn) {
 .then(timeseries=>{
   db.saveData(timeseries,marketsUrl,"timeseries")
   newPayload.timeseries = timeseries
-  newPayload.content = ":chart_with_upwards_trend: timeseries for " + symbol + " until:  " + to
+  newPayload.content = ":chart_with_upwards_trend:" + symbol + " until:  " + to
   online.processMessage(newPayload,conn)
   //console.log("getTimeSerie",timeseries);
   //conn.client.send(JSON.stringify({type: "markets",payload: {type: "stock",instrument: symbol,timeseries: timeseries}}))})
