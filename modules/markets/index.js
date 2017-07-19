@@ -82,6 +82,7 @@ function getTimeSerie(payload,conn) {
   //conn.client.send(JSON.stringify({type: "markets",payload: {type: "stock",instrument: symbol,timeseries: []}}))
 })
 }
+}
 
 
 
