@@ -12,6 +12,7 @@ let marketsUrl = db.db2Url("markets")
 
 //  payload = {type: "stocks",payload: {type,targetChannel,content}}
 function processMarkets(payload,conn) {
+  console.log("processMarkets",payload);
   let type = payload.type
   switch (type) {
     case "timeserie":
