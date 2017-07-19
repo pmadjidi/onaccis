@@ -106,7 +106,7 @@ return googleFinance.companyNews({
    newPayload.news = news
    online.processMessage(newPayload,conn)
   // conn.client.send(JSON.stringify({type: "markets", payload: {type: "news",instrument: symbol,data: news}}
- ))})
+})
  .catch(err=>{
    newPayload.news = []
    online.processMessage(newPayload,conn)
