@@ -58,12 +58,14 @@ function getTimeSerie(payload,conn) {
   let symbol = payload.instrument
   let newPayload = {type,symbol}
   if (type === "user") {
-    type = "P2P"
+    payload.selected.type = "P2P"
     newPayload.targetUser = payload.targetUser
   }
   else {
   newPayload.targetChannel = payload.targetChannel
   }
+
+  console.log("getTimeSerie",newPayload);
   let from = '2014-01-01'
   let to =   getDateNow()
   return googleFinance.historical({
@@ -76,7 +78,7 @@ function getTimeSerie(payload,conn) {
   newPayload.timeseries = timeseries
   newPayload.content = "timeseries for " + symbol + " until:  " + to
   online.processMessage(newPayload,conn)
-  console.log("getTimeSerie",timeseries);
+  //console.log("getTimeSerie",timeseries);
   //conn.client.send(JSON.stringify({type: "markets",payload: {type: "stock",instrument: symbol,timeseries: timeseries}}))})
 })
 .catch(err=>{
