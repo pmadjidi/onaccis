@@ -6,7 +6,8 @@ var fs = require('fs');
 var companyJson = require('./companylist.json')
 const online  = require('../online/')
 const db = require('../db/')
-let sessionUrl = db.db2Url("sessions")
+let marketsUrl = db.db2Url("markets")
+
 
 
 //  payload = {type: "stocks",payload: {type,targetChannel,content}}
@@ -14,10 +15,10 @@ function processMarkets(payload,conn) {
   let type = payload.type
   switch (type) {
     case "timeserie":
-    getTimeSerie(payload.instrument,conn)
+    getTimeSerie(payload,conn)
     break
     case "news":
-    getStockNews(payload.instrument,conn)
+    getStockNews(payload,conn)
     break
     case "list":
     getStockList(conn)
@@ -51,7 +52,17 @@ return newdate
 }
 
 
-function getTimeSerie(symbol,conn) {
+function getTimeSerie(payload,conn) {
+  let type = payload.selected.type
+  let symbol = payload.instrument
+  let newPayload = {typ,symbol}
+  if (type === "user") {
+    type = "P2P"
+    newPayload.targetUser = payload.targetUser
+  }
+  else {
+  newPayload.targetChannel = payload.targetChannel
+  }
   let from = '2014-01-01'
   let to =   getDateNow()
   return googleFinance.historical({
@@ -59,24 +70,47 @@ function getTimeSerie(symbol,conn) {
   from, // from
   to // to
 })
-.then(timeseries=>conn.client.send(JSON.stringify({type: "markets",payload: {type: "stock",instrument: symbol,timeseries: timeseries}})))
+.then(timeseries=>{
+  db.saveData(timeseries,marketsUrl,"timeseries")
+  newPayload.timeseries = timeseries
+  online.processMessage(newPayload,conn)
+  //conn.client.send(JSON.stringify({type: "markets",payload: {type: "stock",instrument: symbol,timeseries: timeseries}}))})
 .catch(err=>{
+  newPayload.timeseries = []
+  online.processMessage(newPayload,conn)
   console.log(err)
-  conn.client.send(JSON.stringify({type: "markets",payload: {type: "stock",instrument: symbol,timeseries: []}}))
+  //conn.client.send(JSON.stringify({type: "markets",payload: {type: "stock",instrument: symbol,timeseries: []}}))
 })
 }
 
 
 
 
-function getStockNews(symbol,conn) {
+function getStockNews(payload,conn) {
+  let type = payload.selected.type
+  let symbol = payload.instrument
+  let newPayload = {typ,symbol}
+  if (type === "user") {
+    type = "P2P"
+    newPayload.targetUser = payload.targetUser
+  }
+  else {
+  newPayload.targetChannel = payload.targetChannel
+  }
 return googleFinance.companyNews({
    symbol
  })
- .then(news=>conn.client.send(JSON.stringify({type: "markets", payload: {type: "news",instrument: symbol,data: news}})))
+ .then(news=>{
+   db.saveData(news,marketsUrl,"news")
+   newPayload.news = news
+   online.processMessage(newPayload,conn)
+  // conn.client.send(JSON.stringify({type: "markets", payload: {type: "news",instrument: symbol,data: news}}
+ ))})
  .catch(err=>{
+   newPayload.news = []
+   online.processMessage(newPayload,conn)
    console.log(err)
-   conn.client.send(JSON.stringify({type: "markets", payload: {type: "news",instrument: symbol,data: []}}))
+   //conn.client.send(JSON.stringify({type: "markets", payload: {type: "news",instrument: symbol,data: []}}))
  })
 }
 
