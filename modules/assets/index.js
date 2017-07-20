@@ -63,7 +63,7 @@ function image(payload,conn) {
   let contentSymbol
   let fileExt
 
-  fileExt = message.name.split('.').pop().toUpperCase();
+  fileExt = filename.split('.').pop().toUpperCase();
   switch (fileExt) {
       case "GIF":
       case "TIF":
